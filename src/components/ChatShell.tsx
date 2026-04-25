@@ -511,12 +511,20 @@ function prettyPlan(p?: string): string | undefined {
 function accountPrimaryLabel(a: AccountSummary): string {
   // Always lead with the email so users with multiple ChatGPT logins
   // can tell them apart at a glance — workspace name follows for Team
-  // memberships. Personal accounts just show the email alone.
+  // memberships. Legacy rows (saved before the workspace metadata was
+  // captured) use the account-id suffix as a last-resort disambiguator.
   const email = a.email;
   if (a.workspace_structure === 'workspace' && a.workspace_name) {
     return email ? `${email} · ${a.workspace_name}` : a.workspace_name;
   }
-  if (email) return email;
+  if (a.workspace_structure === 'personal' && email) {
+    return `${email} · 个人`;
+  }
+  if (email) {
+    // No workspace metadata — append id suffix so duplicate-email rows
+    // are at least visually distinct.
+    return `${email} · #${a.id.slice(0, 6)}`;
+  }
   return a.id.slice(0, 8);
 }
 
@@ -526,9 +534,19 @@ function accountSecondaryLabel(a: AccountSummary): string {
     return plan ? `${plan} · 工作区` : '工作区';
   }
   if (a.workspace_structure === 'personal') {
-    return plan ? `${plan} · 个人` : '个人';
+    return plan ? `${plan} · 个人空间` : '个人空间';
   }
-  return plan ?? '本地档案';
+  // Legacy backup before workspace identity was captured. Make this
+  // explicit so the user knows why the row is featureless.
+  return `历史归档 · 重新备份后会显示 Team 名称`;
+}
+
+function accountInitial(a: AccountSummary): string {
+  if (a.workspace_structure === 'workspace' && a.workspace_name) {
+    return a.workspace_name[0]?.toUpperCase() || '·';
+  }
+  if (a.workspace_structure === 'personal') return 'P';
+  return (a.email?.[0] || a.id[0] || '·').toUpperCase();
 }
 
 function collectAccounts(rows: ConversationIndexRow[]): AccountSummary[] {
@@ -597,7 +615,9 @@ function UserPill({
         : active
           ? `${accountSecondaryLabel(active)} · ${active.count} 条`
           : '本地档案';
-  const initial = (primary[0] || 'R').toUpperCase();
+  const initial = active
+    ? accountInitial(active)
+    : (primary[0] || 'R').toUpperCase();
 
   return (
     <div className="relative border-t border-zinc-200/60 px-3 py-3">
@@ -610,6 +630,7 @@ function UserPill({
           />
           <div className="absolute bottom-[calc(100%-2px)] left-3 right-3 z-20 mb-1 max-h-[60vh] overflow-y-auto rounded-xl border border-zinc-200 bg-white py-1 shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
             <SwitcherRow
+              initial="·"
               label="全部账号"
               secondary={`${total} 条会话`}
               active={accountFilter === 'all'}
@@ -621,6 +642,7 @@ function UserPill({
             {accounts.map((a) => (
               <SwitcherRow
                 key={a.id}
+                initial={a.id === 'unknown' ? '?' : accountInitial(a)}
                 label={
                   a.id === 'unknown'
                     ? '未标注（历史归档）'
@@ -666,11 +688,13 @@ function UserPill({
 }
 
 function SwitcherRow({
+  initial,
   label,
   secondary,
   active,
   onClick,
 }: {
+  initial: string;
   label: string;
   secondary: string;
   active: boolean;
@@ -685,7 +709,7 @@ function SwitcherRow({
       }`}
     >
       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-200 text-[11px] font-semibold text-zinc-700">
-        {label[0]?.toUpperCase() || '·'}
+        {initial}
       </span>
       <div className="flex min-w-0 flex-1 flex-col leading-tight">
         <span className="truncate text-[13px] text-zinc-900">{label}</span>
