@@ -277,23 +277,34 @@ function ImagePart({ assetId, name }: { assetId?: string; name?: string }) {
     };
   }, [assetId]);
 
+  // ChatGPT renders images full-bleed in the assistant column with a
+  // generous corner radius and no surrounding chrome. Mirror that.
+  const shellClass = 'my-4 max-w-[640px] overflow-hidden rounded-[22px]';
+
   if (url === 'missing') {
     return (
-      <div className="my-3 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-500">
-        ◫ 图片未保存原图
+      <div
+        className={`${shellClass} flex aspect-[4/3] items-center justify-center bg-zinc-100 text-sm text-zinc-400`}
+      >
+        图片未保存原图
       </div>
     );
   }
   if (!url) {
     return (
-      <div className="my-3 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-400">
-        ◫ 图片加载中…
-      </div>
+      <div
+        className={`${shellClass} flex aspect-[4/3] animate-pulse items-center justify-center bg-zinc-100`}
+      />
     );
   }
   return (
-    <figure className="my-3 overflow-hidden rounded-2xl">
-      <img src={url} alt={name ?? 'image'} loading="lazy" className="block h-auto max-w-full" />
+    <figure className={shellClass}>
+      <img
+        src={url}
+        alt={name ?? 'image'}
+        loading="lazy"
+        className="block h-auto w-full"
+      />
     </figure>
   );
 }
