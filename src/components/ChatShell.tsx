@@ -52,6 +52,27 @@ export default function ChatShell({
     typeof window !== 'undefined' && window.localStorage?.getItem('rk:sidebar') === 'collapsed',
   );
   const [search, setSearch] = useState('');
+  const [accountFilter, setAccountFilter] = useState<string>(() => {
+    try {
+      return window.localStorage?.getItem('rk:accountFilter') ?? 'all';
+    } catch {
+      return 'all';
+    }
+  });
+  useEffect(() => {
+    try {
+      window.localStorage?.setItem('rk:accountFilter', accountFilter);
+    } catch {
+      /* ignore */
+    }
+  }, [accountFilter]);
+
+  const accounts = useMemo(() => collectAccounts(state.rows), [state.rows]);
+  const visibleRows = useMemo(() => {
+    if (accountFilter === 'all') return state.rows;
+    if (accountFilter === 'unknown') return state.rows.filter((r) => !r.account_id);
+    return state.rows.filter((r) => r.account_id === accountFilter);
+  }, [state.rows, accountFilter]);
 
   useEffect(() => {
     let cancelled = false;
@@ -104,7 +125,7 @@ export default function ChatShell({
   return (
     <div className="flex min-h-screen bg-white text-zinc-900">
       <Sidebar
-        rows={state.rows}
+        rows={visibleRows}
         currentId={currentId}
         collapsed={collapsed}
         onToggle={toggleCollapse}
@@ -113,6 +134,9 @@ export default function ChatShell({
         installed={state.installed}
         loading={state.loading}
         error={state.error}
+        accounts={accounts}
+        accountFilter={accountFilter}
+        onAccountFilterChange={setAccountFilter}
       />
       <div className="flex min-h-screen flex-1 flex-col">
         <TopBar title={title} right={topRight} sidebarCollapsed={collapsed} onToggle={toggleCollapse} />
@@ -132,6 +156,9 @@ function Sidebar({
   installed,
   loading,
   error,
+  accounts,
+  accountFilter,
+  onAccountFilterChange,
 }: {
   rows: ConversationIndexRow[];
   currentId?: string;
@@ -142,6 +169,9 @@ function Sidebar({
   installed: boolean | null;
   loading: boolean;
   error?: string;
+  accounts: AccountSummary[];
+  accountFilter: string;
+  onAccountFilterChange: (id: string) => void;
 }) {
   const [showAllRecent, setShowAllRecent] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -296,8 +326,13 @@ function Sidebar({
         )}
       </div>
 
-      {/* User pill at bottom */}
-      <UserPill rows={rows} />
+      {/* User pill at bottom — also serves as the workspace switcher */}
+      <UserPill
+        rows={rows}
+        accounts={accounts}
+        accountFilter={accountFilter}
+        onAccountFilterChange={onAccountFilterChange}
+      />
 
       {installed === null && (
         <p className="px-4 pb-2 text-[10px] text-zinc-400 animate-pulse">
@@ -449,24 +484,213 @@ function InstallPrompt() {
   );
 }
 
-function UserPill({ rows }: { rows: ConversationIndexRow[] }) {
-  // Pull the most recent account_email out of the data; fall back to a
-  // generic placeholder. Mirrors ChatGPT's bottom-left identity pill.
-  const account = rows.find((r) => r.account_email)?.account_email;
-  const name = account?.split('@')[0] || '本地档案';
-  const initial = (name[0] || 'R').toUpperCase();
+interface AccountSummary {
+  id: string;
+  email?: string;
+  workspace_name?: string;
+  workspace_plan_type?: string;
+  workspace_structure?: 'personal' | 'workspace' | 'unknown';
+  count: number;
+}
+
+const PLAN_DISPLAY: Record<string, string> = {
+  free: 'Free',
+  plus: 'Plus',
+  pro: 'Pro',
+  prolite: 'Pro Lite',
+  team: 'Team',
+  enterprise: 'Enterprise',
+  go: 'Go',
+};
+
+function prettyPlan(p?: string): string | undefined {
+  if (!p) return undefined;
+  return PLAN_DISPLAY[p] ?? p.charAt(0).toUpperCase() + p.slice(1);
+}
+
+function accountPrimaryLabel(a: AccountSummary): string {
+  if (a.workspace_structure === 'workspace' && a.workspace_name) return a.workspace_name;
+  if (a.email) return a.email.split('@')[0];
+  return a.id.slice(0, 8);
+}
+
+function accountSecondaryLabel(a: AccountSummary): string {
+  const plan = prettyPlan(a.workspace_plan_type);
+  if (a.workspace_structure === 'workspace') {
+    return plan ? `${plan} · 工作区` : '工作区';
+  }
+  if (a.workspace_structure === 'personal') {
+    return plan ? `${plan} · 个人` : '个人';
+  }
+  return plan ?? '本地档案';
+}
+
+function collectAccounts(rows: ConversationIndexRow[]): AccountSummary[] {
+  const map = new Map<string, AccountSummary>();
+  let untagged = 0;
+  for (const r of rows) {
+    if (!r.account_id) {
+      untagged++;
+      continue;
+    }
+    const cur = map.get(r.account_id);
+    if (cur) {
+      cur.count++;
+      if (!cur.email && r.account_email) cur.email = r.account_email;
+      if (!cur.workspace_name && r.workspace_name) cur.workspace_name = r.workspace_name;
+      if (!cur.workspace_plan_type && r.workspace_plan_type)
+        cur.workspace_plan_type = r.workspace_plan_type;
+      if (!cur.workspace_structure && r.workspace_structure)
+        cur.workspace_structure = r.workspace_structure;
+    } else {
+      map.set(r.account_id, {
+        id: r.account_id,
+        email: r.account_email,
+        workspace_name: r.workspace_name,
+        workspace_plan_type: r.workspace_plan_type,
+        workspace_structure: r.workspace_structure,
+        count: 1,
+      });
+    }
+  }
+  const tagged = Array.from(map.values()).sort((a, b) => b.count - a.count);
+  if (untagged > 0) {
+    tagged.push({ id: 'unknown', count: untagged, workspace_structure: 'unknown' });
+  }
+  return tagged;
+}
+
+function UserPill({
+  rows,
+  accounts,
+  accountFilter,
+  onAccountFilterChange,
+}: {
+  rows: ConversationIndexRow[];
+  accounts: AccountSummary[];
+  accountFilter: string;
+  onAccountFilterChange: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const total = rows.length;
+
+  const active = accounts.find((a) => a.id === accountFilter);
+  const primary =
+    accountFilter === 'all'
+      ? '全部账号'
+      : accountFilter === 'unknown'
+        ? '未标注'
+        : active
+          ? accountPrimaryLabel(active)
+          : '本地档案';
+  const secondary =
+    accountFilter === 'all'
+      ? `${total} 条会话`
+      : accountFilter === 'unknown'
+        ? `${active?.count ?? 0} 条 · 历史归档`
+        : active
+          ? `${accountSecondaryLabel(active)} · ${active.count} 条`
+          : '本地档案';
+  const initial = (primary[0] || 'R').toUpperCase();
+
   return (
-    <div className="border-t border-zinc-200/60 px-3 py-3">
-      <div className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-[#ececec] transition-colors cursor-default">
+    <div className="relative border-t border-zinc-200/60 px-3 py-3">
+      {open && accounts.length > 0 && (
+        <>
+          <button
+            aria-label="关闭"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-10 cursor-default"
+          />
+          <div className="absolute bottom-[calc(100%-2px)] left-3 right-3 z-20 mb-1 max-h-[60vh] overflow-y-auto rounded-xl border border-zinc-200 bg-white py-1 shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
+            <SwitcherRow
+              label="全部账号"
+              secondary={`${total} 条会话`}
+              active={accountFilter === 'all'}
+              onClick={() => {
+                onAccountFilterChange('all');
+                setOpen(false);
+              }}
+            />
+            {accounts.map((a) => (
+              <SwitcherRow
+                key={a.id}
+                label={
+                  a.id === 'unknown'
+                    ? '未标注（历史归档）'
+                    : accountPrimaryLabel(a)
+                }
+                secondary={
+                  a.id === 'unknown'
+                    ? `${a.count} 条`
+                    : `${accountSecondaryLabel(a)} · ${a.count} 条`
+                }
+                active={accountFilter === a.id}
+                onClick={() => {
+                  onAccountFilterChange(a.id);
+                  setOpen(false);
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      <button
+        type="button"
+        onClick={() => accounts.length > 0 && setOpen((v) => !v)}
+        disabled={accounts.length === 0}
+        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-[#ececec] disabled:cursor-default disabled:hover:bg-transparent"
+        title={accounts.length > 0 ? '切换账号 / 工作区' : ''}
+      >
         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-700 text-[12px] font-semibold text-white">
           {initial}
         </span>
-        <div className="flex flex-1 flex-col leading-tight">
-          <span className="truncate text-[13px] text-zinc-900">{name}</span>
-          <span className="truncate text-[11px] text-zinc-500">本地档案</span>
+        <div className="flex min-w-0 flex-1 flex-col leading-tight">
+          <span className="truncate text-[13px] text-zinc-900">{primary}</span>
+          <span className="truncate text-[11px] text-zinc-500">{secondary}</span>
         </div>
-      </div>
+        {accounts.length > 0 && (
+          <span className="text-zinc-400">
+            <ChevronDownIcon />
+          </span>
+        )}
+      </button>
     </div>
+  );
+}
+
+function SwitcherRow({
+  label,
+  secondary,
+  active,
+  onClick,
+}: {
+  label: string;
+  secondary: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-[#f4f4f5] ${
+        active ? 'bg-[#f4f4f5]' : ''
+      }`}
+    >
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-200 text-[11px] font-semibold text-zinc-700">
+        {label[0]?.toUpperCase() || '·'}
+      </span>
+      <div className="flex min-w-0 flex-1 flex-col leading-tight">
+        <span className="truncate text-[13px] text-zinc-900">{label}</span>
+        <span className="truncate text-[11px] text-zinc-500">{secondary}</span>
+      </div>
+      {active && (
+        <span className="text-emerald-700" aria-hidden>
+          ✓
+        </span>
+      )}
+    </button>
   );
 }
 

@@ -50,6 +50,9 @@ export interface ArchiveConversation {
   has_files: boolean;
   account_id?: string;
   account_email?: string;
+  workspace_name?: string;
+  workspace_plan_type?: string;
+  workspace_structure?: 'personal' | 'workspace' | 'unknown';
   project_id?: string;
   project_slug?: string;
   project_name?: string;
@@ -69,6 +72,9 @@ export interface ConversationIndexRow {
   has_files: boolean;
   account_id?: string;
   account_email?: string;
+  workspace_name?: string;
+  workspace_plan_type?: string;
+  workspace_structure?: 'personal' | 'workspace' | 'unknown';
   project_id?: string;
   project_slug?: string;
   project_name?: string;
