@@ -8,7 +8,8 @@
  * resolves. No server is involved at any step.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { marked } from 'marked';
 import {
   BridgeError,
   getAssetUrl,
@@ -20,6 +21,8 @@ import type {
   ArchiveMessage,
   ContentPart,
 } from '../lib/types';
+
+marked.setOptions({ gfm: true, breaks: false });
 
 type Stage =
   | { kind: 'loading' }
@@ -164,15 +167,26 @@ function Part({ part, invert = false }: { part: ContentPart; invert?: boolean })
 }
 
 function Markdown({ text, invert }: { text: string; invert?: boolean }) {
-  // No syntax-highlighting / GFM; preserve newlines and a few trivial
-  // markdown bits via prose-ish CSS. Adequate for an archive viewer.
+  const html = useMemo(() => {
+    try {
+      return marked.parse(text ?? '', { async: false }) as string;
+    } catch {
+      return escapeHtml(text ?? '');
+    }
+  }, [text]);
   return (
     <div
-      className={`whitespace-pre-wrap leading-7 ${invert ? 'text-white' : 'text-zinc-900'}`}
-    >
-      {text}
-    </div>
+      className={invert ? 'prose-chat prose-chat-invert' : 'prose-chat'}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function CodeBlock({ lang, text }: { lang?: string; text: string }) {
