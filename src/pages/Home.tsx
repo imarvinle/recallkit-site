@@ -35,6 +35,7 @@ function Header() {
           <a href="#features" className="hover:text-zinc-900">功能</a>
           <a href="#privacy" className="hover:text-zinc-900">隐私</a>
           <a href="#faq" className="hover:text-zinc-900">FAQ</a>
+          <a href="/library" className="hover:text-zinc-900">我的归档</a>
         </nav>
         <a href={STORE_URL} target="_blank" rel="noreferrer" className="btn-primary !px-4 !py-2 text-[13px]">
           免费安装
