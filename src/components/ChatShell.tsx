@@ -509,8 +509,14 @@ function prettyPlan(p?: string): string | undefined {
 }
 
 function accountPrimaryLabel(a: AccountSummary): string {
-  if (a.workspace_structure === 'workspace' && a.workspace_name) return a.workspace_name;
-  if (a.email) return a.email.split('@')[0];
+  // Always lead with the email so users with multiple ChatGPT logins
+  // can tell them apart at a glance — workspace name follows for Team
+  // memberships. Personal accounts just show the email alone.
+  const email = a.email;
+  if (a.workspace_structure === 'workspace' && a.workspace_name) {
+    return email ? `${email} · ${a.workspace_name}` : a.workspace_name;
+  }
+  if (email) return email;
   return a.id.slice(0, 8);
 }
 
