@@ -1,0 +1,615 @@
+/**
+ * ChatGPT-style two-pane shell shared by /library and /c/:id.
+ *
+ * Owns the cross-page state — extension detection + the conversation
+ * list — and renders the left sidebar (quick actions, projects,
+ * recent conversations, user pill) plus the main pane top bar. Pages
+ * pass their own content via `children`.
+ *
+ * Visual fidelity is the goal: light-gray (#f9f9f9) sidebar, single
+ * `#ececec` hover/selected fill, no rules between sections, right-side
+ * collapse toggle that hides the sidebar entirely.
+ */
+
+import { useEffect, useMemo, useState } from 'react';
+import {
+  BridgeError,
+  detectExtension,
+  listConversations,
+} from '../lib/extension-bridge';
+import type { ConversationIndexRow } from '../lib/types';
+
+const PROBE_TIMEOUT_HINT_MS = 3500;
+const RECENT_SHOWN = 12;
+
+export interface ShellState {
+  installed: boolean | null;
+  version?: string;
+  rows: ConversationIndexRow[];
+  loading: boolean;
+  error?: string;
+}
+
+export default function ChatShell({
+  currentId,
+  children,
+  /** Heading shown in the top bar (e.g. "ChatGPT" or the conv title). */
+  title = 'ChatGPT',
+  /** Optional rendered to the right of the top bar (e.g. share). */
+  topRight,
+}: {
+  currentId?: string;
+  children: React.ReactNode;
+  title?: string;
+  topRight?: React.ReactNode;
+}) {
+  const [state, setState] = useState<ShellState>({
+    installed: null,
+    rows: [],
+    loading: true,
+  });
+  const [collapsed, setCollapsed] = useState<boolean>(() =>
+    typeof window !== 'undefined' && window.localStorage?.getItem('rk:sidebar') === 'collapsed',
+  );
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const probe = await detectExtension();
+      if (cancelled) return;
+      if (!probe.installed) {
+        setState({ installed: false, rows: [], loading: false });
+        return;
+      }
+      setState((s) => ({ ...s, installed: true, version: probe.version }));
+      try {
+        const r = await listConversations();
+        if (cancelled) return;
+        setState({
+          installed: true,
+          version: probe.version,
+          rows: r.rows,
+          loading: false,
+        });
+      } catch (err) {
+        if (cancelled) return;
+        setState({
+          installed: true,
+          version: probe.version,
+          rows: [],
+          loading: false,
+          error:
+            err instanceof BridgeError ? err.message : (err as Error).message ?? '加载失败',
+        });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const toggleCollapse = () => {
+    setCollapsed((c) => {
+      const next = !c;
+      try {
+        window.localStorage?.setItem('rk:sidebar', next ? 'collapsed' : 'open');
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  return (
+    <div className="flex min-h-screen bg-white text-zinc-900">
+      <Sidebar
+        rows={state.rows}
+        currentId={currentId}
+        collapsed={collapsed}
+        onToggle={toggleCollapse}
+        search={search}
+        onSearchChange={setSearch}
+        installed={state.installed}
+        loading={state.loading}
+        error={state.error}
+      />
+      <div className="flex min-h-screen flex-1 flex-col">
+        <TopBar title={title} right={topRight} sidebarCollapsed={collapsed} onToggle={toggleCollapse} />
+        <main className="flex-1">{children}</main>
+      </div>
+    </div>
+  );
+}
+
+function Sidebar({
+  rows,
+  currentId,
+  collapsed,
+  onToggle,
+  search,
+  onSearchChange,
+  installed,
+  loading,
+  error,
+}: {
+  rows: ConversationIndexRow[];
+  currentId?: string;
+  collapsed: boolean;
+  onToggle: () => void;
+  search: string;
+  onSearchChange: (v: string) => void;
+  installed: boolean | null;
+  loading: boolean;
+  error?: string;
+}) {
+  const [showAllRecent, setShowAllRecent] = useState(false);
+  const [showAllProjects, setShowAllProjects] = useState(false);
+
+  // Group by project; rows without `project_id` go to "recent".
+  const { projects, recent } = useMemo(() => {
+    const projMap = new Map<string, { id: string; name: string; rows: ConversationIndexRow[] }>();
+    const recentList: ConversationIndexRow[] = [];
+    for (const r of rows) {
+      if (r.project_id) {
+        const cur = projMap.get(r.project_id);
+        const name = r.project_name || r.project_slug || r.project_id.slice(0, 8);
+        if (cur) cur.rows.push(r);
+        else projMap.set(r.project_id, { id: r.project_id, name, rows: [r] });
+      } else {
+        recentList.push(r);
+      }
+    }
+    const projects = Array.from(projMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    return { projects, recent: recentList };
+  }, [rows]);
+
+  const filterMatch = (title: string | null) => {
+    if (!search.trim()) return true;
+    return (title || '').toLowerCase().includes(search.trim().toLowerCase());
+  };
+  const filteredRecent = recent.filter((r) => filterMatch(r.title));
+  const visibleRecent = showAllRecent ? filteredRecent : filteredRecent.slice(0, RECENT_SHOWN);
+  const visibleProjects = showAllProjects ? projects : projects.slice(0, 8);
+
+  if (collapsed) {
+    return (
+      <aside className="flex w-[60px] shrink-0 flex-col items-center bg-[#f9f9f9] py-3">
+        <button
+          onClick={onToggle}
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-[#ececec] transition-colors"
+          title="展开侧栏"
+        >
+          <SidebarToggleIcon />
+        </button>
+        <a
+          href="https://chatgpt.com/"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-1 flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-[#ececec] transition-colors"
+          title="新聊天"
+        >
+          <PencilEditIcon />
+        </a>
+        <button
+          onClick={onToggle}
+          className="mt-1 flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-[#ececec] transition-colors"
+          title="搜索聊天"
+        >
+          <SearchIcon />
+        </button>
+      </aside>
+    );
+  }
+
+  return (
+    <aside className="flex h-screen w-[280px] shrink-0 flex-col bg-[#f9f9f9] sticky top-0">
+      {/* Top: logo + collapse toggle */}
+      <div className="flex items-center justify-between px-3 pt-3">
+        <a href="/" className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#ececec]" title="Recallkit 主页">
+          <Logo />
+        </a>
+        <button
+          onClick={onToggle}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-[#ececec] transition-colors"
+          title="收起侧栏"
+        >
+          <SidebarToggleIcon />
+        </button>
+      </div>
+
+      {/* Quick actions */}
+      <div className="mt-2 flex flex-col gap-0.5 px-2">
+        <SidebarItem
+          href="https://chatgpt.com/"
+          external
+          icon={<PencilEditIcon />}
+          label="新聊天"
+        />
+        <SidebarSearchItem value={search} onChange={onSearchChange} />
+        <SidebarItem
+          href="https://chatgpt.com/codex"
+          external
+          icon={<CodexIcon />}
+          label="Codex"
+          rightIcon={<ExternalIcon />}
+        />
+        <SidebarItem icon={<DotsIcon />} label="更多" muted />
+      </div>
+
+      {/* Body — scrollable */}
+      <div className="flex-1 overflow-y-auto px-2 pt-3">
+        {installed === false && <InstallPrompt />}
+        {installed && loading && (
+          <p className="px-3 py-4 text-xs text-zinc-400">读取归档中…</p>
+        )}
+        {installed && error && (
+          <p className="px-3 py-4 text-xs text-red-500">读取失败：{error}</p>
+        )}
+        {installed && !loading && !error && rows.length === 0 && (
+          <p className="px-3 py-4 text-xs text-zinc-400">还没有备份的会话。打开 ChatGPT，让 Recallkit 开始实时备份。</p>
+        )}
+
+        {projects.length > 0 && (
+          <>
+            <SectionLabel>项目</SectionLabel>
+            <div className="flex flex-col gap-0.5">
+              <SidebarItem icon={<FolderPlusIcon />} label="新项目" muted />
+              {visibleProjects.map((p) => (
+                <ProjectFolder
+                  key={p.id}
+                  name={p.name}
+                  rows={p.rows}
+                  currentId={currentId}
+                  filter={search}
+                />
+              ))}
+              {projects.length > 8 && (
+                <button
+                  onClick={() => setShowAllProjects((v) => !v)}
+                  className="px-3 py-1.5 text-left text-[13px] text-zinc-500 hover:bg-[#ececec] rounded-lg flex items-center gap-2"
+                >
+                  <DotsIcon /> {showAllProjects ? '收起' : '更多'}
+                </button>
+              )}
+            </div>
+          </>
+        )}
+
+        {filteredRecent.length > 0 && (
+          <>
+            <SectionLabel>最近</SectionLabel>
+            <div className="flex flex-col gap-0.5">
+              {visibleRecent.map((r) => (
+                <ConversationLink key={r.id} row={r} active={r.id === currentId} />
+              ))}
+              {filteredRecent.length > RECENT_SHOWN && !showAllRecent && (
+                <button
+                  onClick={() => setShowAllRecent(true)}
+                  className="px-3 py-1.5 text-left text-[13px] text-zinc-500 hover:bg-[#ececec] rounded-lg"
+                >
+                  显示更多
+                </button>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* User pill at bottom */}
+      <UserPill rows={rows} />
+
+      {installed === null && (
+        <p className="px-4 pb-2 text-[10px] text-zinc-400 animate-pulse">
+          {/* < PROBE_TIMEOUT_HINT_MS shows quietly */}
+          检测扩展中…
+        </p>
+      )}
+      {/* expose hint timeout for build optimisers */}
+      <span className="hidden">{PROBE_TIMEOUT_HINT_MS}</span>
+    </aside>
+  );
+}
+
+function ProjectFolder({
+  name,
+  rows,
+  currentId,
+  filter,
+}: {
+  name: string;
+  rows: ConversationIndexRow[];
+  currentId?: string;
+  filter: string;
+}) {
+  const expandedDefault = rows.some((r) => r.id === currentId);
+  const [open, setOpen] = useState(expandedDefault);
+  const filtered = filter.trim()
+    ? rows.filter((r) => (r.title || '').toLowerCase().includes(filter.trim().toLowerCase()))
+    : rows;
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-zinc-700 hover:bg-[#ececec] transition-colors"
+      >
+        <FolderIcon open={open} />
+        <span className="truncate flex-1">{name}</span>
+        <span className="text-[10px] text-zinc-400">{rows.length}</span>
+      </button>
+      {open && (
+        <div className="ml-4 flex flex-col gap-0.5 border-l border-zinc-200 pl-2">
+          {filtered.map((r) => (
+            <ConversationLink key={r.id} row={r} active={r.id === currentId} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ConversationLink({ row, active }: { row: ConversationIndexRow; active: boolean }) {
+  return (
+    <a
+      href={`/c/${encodeURIComponent(row.id)}`}
+      title={row.title || '(无标题)'}
+      className={`group flex items-center gap-1 rounded-lg px-3 py-1.5 text-[13.5px] transition-colors ${
+        active ? 'bg-[#ececec] text-zinc-900' : 'text-zinc-700 hover:bg-[#ececec]'
+      }`}
+    >
+      <span className="flex-1 truncate">{row.title || '(无标题)'}</span>
+    </a>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="px-3 pb-1 pt-4 text-[11px] font-medium text-zinc-400">{children}</div>
+  );
+}
+
+function SidebarItem({
+  href,
+  external,
+  icon,
+  label,
+  rightIcon,
+  muted,
+  onClick,
+}: {
+  href?: string;
+  external?: boolean;
+  icon: React.ReactNode;
+  label: string;
+  rightIcon?: React.ReactNode;
+  muted?: boolean;
+  onClick?: () => void;
+}) {
+  const cls = `flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+    muted ? 'text-zinc-500' : 'text-zinc-800'
+  } hover:bg-[#ececec]`;
+  const inner = (
+    <>
+      <span className="flex h-5 w-5 items-center justify-center text-zinc-700">{icon}</span>
+      <span className="flex-1 truncate">{label}</span>
+      {rightIcon && <span className="text-zinc-400">{rightIcon}</span>}
+    </>
+  );
+  if (href) {
+    return (
+      <a
+        href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noreferrer' : undefined}
+        className={cls}
+      >
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <button onClick={onClick} className={`${cls} text-left w-full`}>
+      {inner}
+    </button>
+  );
+}
+
+function SidebarSearchItem({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <label className="flex cursor-text items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-800 hover:bg-[#ececec] focus-within:bg-[#ececec] transition-colors">
+      <span className="flex h-5 w-5 items-center justify-center text-zinc-700">
+        <SearchIcon />
+      </span>
+      <input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="搜索聊天"
+        className="flex-1 bg-transparent placeholder:text-zinc-500 focus:outline-none"
+      />
+    </label>
+  );
+}
+
+function InstallPrompt() {
+  return (
+    <div className="mx-2 mt-2 rounded-xl border border-zinc-200 bg-white p-3 text-[12.5px] leading-relaxed text-zinc-600">
+      <p className="font-medium text-zinc-900">未检测到扩展</p>
+      <p className="mt-1">
+        本页面只是 Recallkit 扩展的在线阅读窗口；请先安装扩展并备份至少一条会话。
+      </p>
+      <a
+        href="/"
+        className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-zinc-900 hover:underline"
+      >
+        前往首页 →
+      </a>
+    </div>
+  );
+}
+
+function UserPill({ rows }: { rows: ConversationIndexRow[] }) {
+  // Pull the most recent account_email out of the data; fall back to a
+  // generic placeholder. Mirrors ChatGPT's bottom-left identity pill.
+  const account = rows.find((r) => r.account_email)?.account_email;
+  const name = account?.split('@')[0] || '本地档案';
+  const initial = (name[0] || 'R').toUpperCase();
+  return (
+    <div className="border-t border-zinc-200/60 px-3 py-3">
+      <div className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-[#ececec] transition-colors cursor-default">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-700 text-[12px] font-semibold text-white">
+          {initial}
+        </span>
+        <div className="flex flex-1 flex-col leading-tight">
+          <span className="truncate text-[13px] text-zinc-900">{name}</span>
+          <span className="truncate text-[11px] text-zinc-500">本地档案</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TopBar({
+  title,
+  right,
+  sidebarCollapsed,
+  onToggle,
+}: {
+  title: string;
+  right?: React.ReactNode;
+  sidebarCollapsed: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b border-transparent bg-white/85 px-4 backdrop-blur-md">
+      {sidebarCollapsed && (
+        <button
+          onClick={onToggle}
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 transition-colors"
+          title="展开侧栏"
+        >
+          <SidebarToggleIcon />
+        </button>
+      )}
+      <h1 className="flex items-center gap-1 font-semibold tracking-tight text-zinc-900">
+        <span>{title}</span>
+        <ChevronDownIcon />
+      </h1>
+      <div className="flex-1" />
+      {right}
+    </header>
+  );
+}
+
+/* ─── icons ─────────────────────────────────────────────────────── */
+
+function Logo() {
+  return (
+    <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-sage-deep text-white">
+      <svg
+        viewBox="0 0 64 64"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M32 14 V36" />
+        <path d="M22 27 L32 37 L42 27" />
+        <rect x="14" y="44" width="36" height="5" rx="2.5" fill="currentColor" stroke="none" />
+      </svg>
+    </span>
+  );
+}
+
+function SidebarToggleIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="3.5" width="14" height="13" rx="2" />
+      <path d="M8 3.5v13" />
+    </svg>
+  );
+}
+
+function PencilEditIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 13.4V16h2.6l8-8L12 5.4l-8 8z" />
+      <path d="M11.5 5.9l2.6 2.6" />
+    </svg>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="9" cy="9" r="5" />
+      <path d="M13 13l3.5 3.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CodexIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <polygon points="10,2.5 17,6.5 17,13.5 10,17.5 3,13.5 3,6.5" />
+      <circle cx="10" cy="10" r="2.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function DotsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor">
+      <circle cx="5" cy="10" r="1.4" />
+      <circle cx="10" cy="10" r="1.4" />
+      <circle cx="15" cy="10" r="1.4" />
+    </svg>
+  );
+}
+
+function FolderPlusIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
+      <path d="M3 6.5V15a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-6L8.5 5H4a1 1 0 0 0-1 1v.5z" />
+      <path d="M10 11h4M12 9v4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function FolderIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className="h-4 w-4 transition-transform"
+      style={{ transform: open ? 'rotate(0)' : 'rotate(0)' }}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6.5V15a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-6L8.5 5H4a1 1 0 0 0-1 1v.5z" />
+      {open && <path d="M5 10h10" strokeLinecap="round" />}
+    </svg>
+  );
+}
+
+function ExternalIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M7 5h8v8" strokeLinecap="round" />
+      <path d="M15 5l-9 9" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

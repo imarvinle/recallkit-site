@@ -14,6 +14,7 @@ import {
   getAssetUrl,
   getConversation,
 } from '../lib/extension-bridge';
+import ChatShell from '../components/ChatShell';
 import type {
   ArchiveConversation,
   ArchiveMessage,
@@ -52,9 +53,11 @@ export default function Reader({ id }: { id: string }) {
     };
   }, [id]);
 
+  const title =
+    stage.kind === 'ready' ? stage.conversation.title || 'ChatGPT' : 'ChatGPT';
+
   return (
-    <main className="min-h-screen bg-white text-zinc-900">
-      <Navbar />
+    <ChatShell currentId={id} title={title}>
       <div className="mx-auto max-w-[768px] px-6 py-10">
         {stage.kind === 'loading' && (
           <p className="animate-pulse py-20 text-center text-zinc-400">从扩展读取中…</p>
@@ -70,7 +73,6 @@ export default function Reader({ id }: { id: string }) {
         )}
         {stage.kind === 'ready' && (
           <>
-            <Header conv={stage.conversation} />
             {hasAnyInternal(stage.messages) && (
               <div className="mb-2 flex justify-end">
                 <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-zinc-500 transition-colors hover:text-zinc-900 select-none">
@@ -95,30 +97,7 @@ export default function Reader({ id }: { id: string }) {
           </>
         )}
       </div>
-      <Footer />
-    </main>
-  );
-}
-
-function Header({ conv }: { conv: ArchiveConversation }) {
-  return (
-    <header className="mb-8">
-      <a href="/library" className="text-xs text-zinc-400 hover:text-zinc-900">
-        ← 返回归档列表
-      </a>
-      <h1 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
-        {conv.title || '(无标题)'}
-      </h1>
-      <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-xs text-zinc-500">
-        <span>创建 {conv.created_at?.slice(0, 10)}</span>
-        <span>更新 {conv.updated_at?.slice(0, 10)}</span>
-        <span>{conv.message_count} 条消息</span>
-        {conv.models?.length > 0 && (
-          <span className="font-mono">{conv.models.join(', ')}</span>
-        )}
-        {conv.project_name && <span>项目 · {conv.project_name}</span>}
-      </div>
-    </header>
+    </ChatShell>
   );
 }
 
@@ -336,52 +315,3 @@ function FilePart({ assetId, name }: { assetId?: string; name?: string }) {
   );
 }
 
-function Navbar() {
-  return (
-    <header className="sticky top-0 z-30 border-b border-zinc-100 bg-white/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[768px] items-center justify-between px-6 py-4">
-        <a href="/" className="flex items-center gap-2">
-          <Logo />
-          <span className="font-semibold tracking-tight">Recallkit</span>
-        </a>
-        <a href="/library" className="text-sm text-zinc-500 hover:text-zinc-900">
-          ← 我的归档
-        </a>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-zinc-100 py-10 text-sm text-zinc-500">
-      <div className="mx-auto flex max-w-[768px] flex-wrap items-center justify-between gap-4 px-6">
-        <span>© {new Date().getFullYear()} Recallkit</span>
-        <a href="/privacy" className="hover:text-zinc-900">
-          隐私政策
-        </a>
-      </div>
-    </footer>
-  );
-}
-
-function Logo() {
-  return (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-sage-deep text-white">
-      <svg
-        viewBox="0 0 64 64"
-        width="18"
-        height="18"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M32 14 V36" />
-        <path d="M22 27 L32 37 L42 27" />
-        <rect x="14" y="44" width="36" height="5" rx="2.5" fill="currentColor" stroke="none" />
-      </svg>
-    </span>
-  );
-}
