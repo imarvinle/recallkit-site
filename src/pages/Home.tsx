@@ -33,6 +33,7 @@ function Header() {
         </a>
         <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
           <a href="#features" className="hover:text-zinc-900">功能</a>
+          <a href="/degraded" className="hover:text-zinc-900">降智检测</a>
           <a href="#privacy" className="hover:text-zinc-900">隐私</a>
           <a href="#faq" className="hover:text-zinc-900">FAQ</a>
           <a href="/library" className="hover:text-zinc-900">我的归档</a>
@@ -56,16 +57,17 @@ function Hero() {
       <div className="mx-auto max-w-4xl px-6 py-24 text-center md:py-32">
         <span className="inline-flex items-center gap-2 rounded-full border border-sage/40 bg-sage-soft px-3 py-1 text-xs font-medium text-sage-deep">
           <span className="h-1.5 w-1.5 rounded-full bg-sage-deep" />
-          实时备份 · 全程离线 · 永不上传
+          降智检测 · 实时备份 · 全程离线
         </span>
         <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-          别让重要的 ChatGPT 对话<br />
-          <span className="italic text-sage-deep">悄悄消失。</span>
+          看清你正在用的模型，<br />
+          <span className="italic text-sage-deep">留住每一次对话。</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
-          Recallkit 在你聊天的同时，把每一条 ChatGPT
-          会话静默归档到浏览器本地。<strong className="text-zinc-900">不上传服务器，
-          不收集隐私，不依赖账号注册。</strong>
+          Recallkit 在你聊天的同时，
+          <strong className="text-zinc-900">实时识别 ChatGPT 是否被悄悄降智</strong>
+          ，并把每一条会话静默归档到浏览器本地。
+          <strong className="text-zinc-900">不上传服务器，不收集隐私，不依赖账号注册。</strong>
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <a href={STORE_URL} target="_blank" rel="noreferrer" className="btn-primary">
@@ -85,6 +87,12 @@ function Hero() {
 
 function Features() {
   const items = [
+    {
+      title: '降智检测',
+      en: 'Degrade detection',
+      desc: '本地交叉校验，识别后台被悄悄替换的模型；三档判定，发现异常立刻给出明确结论。',
+      href: '/degraded',
+    },
     {
       title: '实时备份',
       en: 'Live backup',
@@ -124,21 +132,41 @@ function Features() {
             Functionality · 功能
           </p>
           <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            把 ChatGPT 历史<span className="italic text-sage-deep">变成你自己的资产</span>。
+            看清现状，<span className="italic text-sage-deep">留住资产</span>。
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
-            围绕"备份、归档、搜索、导出"四个最高频的需求设计，
-            每一项都做到比 ChatGPT 官方导出更顺手。
+            围绕"降智识别、备份、归档、搜索、导出"五个最高频的需求设计，
+            每一项都在你浏览器里就完成。
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((it) => (
-            <div key={it.title} className="feature-card">
-              <h3 className="text-lg font-semibold">{it.title}</h3>
-              <p className="mt-1 text-xs uppercase tracking-wider text-zinc-400">{it.en}</p>
-              <p className="mt-3 leading-relaxed text-zinc-600">{it.desc}</p>
-            </div>
-          ))}
+          {items.map((it) => {
+            const inner = (
+              <>
+                <h3 className="text-lg font-semibold">{it.title}</h3>
+                <p className="mt-1 text-xs uppercase tracking-wider text-zinc-400">{it.en}</p>
+                <p className="mt-3 leading-relaxed text-zinc-600">{it.desc}</p>
+                {it.href && (
+                  <span className="mt-4 inline-flex text-sm font-medium text-sage-deep">
+                    了解详情 →
+                  </span>
+                )}
+              </>
+            );
+            return it.href ? (
+              <a
+                key={it.title}
+                href={it.href}
+                className="feature-card hover:-translate-y-0.5 hover:border-sage/60 transition"
+              >
+                {inner}
+              </a>
+            ) : (
+              <div key={it.title} className="feature-card">
+                {inner}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -233,6 +261,10 @@ function UseCases() {
 
 function Faq() {
   const items = [
+    {
+      q: '什么是"降智"？Recallkit 怎么发现的？',
+      a: '"降智"指 ChatGPT 在不告知用户的情况下，把请求路由到比 UI 选择更低规格的模型。Recallkit 在你浏览器本地交叉校验，发现实际运行的模型与你选择的不一致时立刻给出"已降智"结论。详情见 /degraded 说明页。',
+    },
     {
       q: '会和 ChatGPT 网页冲突吗？',
       a: '不会。Recallkit 用 Manifest V3 标准方式读取你的 ChatGPT 会话；备份在后台静默触发，对网页无任何视觉干扰。',
