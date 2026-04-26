@@ -759,21 +759,25 @@ function TopBar({
 /* ─── icons ─────────────────────────────────────────────────────── */
 
 function Logo() {
+  // Mark: white speech bubble + sage-deep check on the sage-deep
+  // rounded square. Mirrors the Chrome extension icon (public/icons/
+  // icon.svg in the chatgpt-exporter repo) so the brand reads the
+  // same wherever it shows up.
   return (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-sage-deep text-white">
-      <svg
-        viewBox="0 0 64 64"
-        width="16"
-        height="16"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M32 14 V36" />
-        <path d="M22 27 L32 37 L42 27" />
-        <rect x="14" y="44" width="36" height="5" rx="2.5" fill="currentColor" stroke="none" />
+    <span className="inline-flex h-6 w-6 items-center justify-center overflow-hidden rounded-md bg-sage-deep">
+      <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden>
+        <path
+          d="M14 14 H50 a6 6 0 0 1 6 6 V40 a6 6 0 0 1 -6 6 H30 L22 54 V46 H14 a6 6 0 0 1 -6 -6 V20 a6 6 0 0 1 6 -6 z"
+          fill="#FFFFFF"
+        />
+        <path
+          d="M21 30 L28 37 L42 21"
+          stroke="#496A48"
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
       </svg>
     </span>
   );
