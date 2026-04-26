@@ -50,37 +50,18 @@ export default function Degraded() {
         </Section>
 
         <Section title="3. Recallkit 是怎么检测的">
-          <p>ChatGPT 的内部接口在每条对话的元数据里包含两个关键字段：</p>
-          <Table>
-            <thead>
-              <tr>
-                <th className="w-1/3">字段</th>
-                <th>含义</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[13px]">
-                    model_slug
-                  </code>
-                </td>
-                <td>你在 UI 上选择的模型</td>
-              </tr>
-              <tr>
-                <td>
-                  <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[13px]">
-                    resolved_*
-                  </code>
-                </td>
-                <td>实际运行你这条请求的模型</td>
-              </tr>
-            </tbody>
-          </Table>
           <p>
-            Recallkit 在浏览器本地比对两者是否一致 ——{' '}
-            <strong className="text-zinc-900">不一致就是降智确凿的信号</strong>。
-            整个判断过程发生在你的设备上，不上传任何数据。
+            Recallkit 会在你每次对话发生时，
+            <strong className="text-zinc-900">读取浏览器和 ChatGPT 之间的若干关键信号</strong>
+            ，并做交叉校验，判断你这条请求是否被路由到了非预期的模型。
+          </p>
+          <p>
+            整个判断过程
+            <strong className="text-zinc-900">完全发生在你的设备上</strong>
+            ：不上传任何数据、不依赖外部服务、不调用第三方接口。一旦发现异常，立刻在侧栏给出明确结论。
+          </p>
+          <p className="text-zinc-500 text-[13.5px]">
+            为了避免被针对性规避，具体的判断字段与算法不在此公开。
           </p>
         </Section>
 
@@ -202,22 +183,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h3 className="font-display text-xl font-semibold tracking-tight text-zinc-900">{title}</h3>
       <div className="mt-3 space-y-3">{children}</div>
     </section>
-  );
-}
-
-function Table({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="my-2 overflow-hidden rounded-xl border border-zinc-200">
-      <table className="w-full border-collapse text-sm">
-        <colgroup>
-          <col />
-          <col />
-        </colgroup>
-        <tbody className="[&_th]:bg-zinc-50 [&_th]:text-xs [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-wider [&_th]:text-zinc-500 [&_th]:py-2.5 [&_th]:px-3.5 [&_td]:py-2.5 [&_td]:px-3.5 [&_tr]:border-b [&_tr]:border-zinc-100 [&_tr:last-child]:border-0">
-          {children}
-        </tbody>
-      </table>
-    </div>
   );
 }
 
