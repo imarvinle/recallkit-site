@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Home from './pages/Home';
 import Privacy from './pages/Privacy';
+import Changelog from './pages/Changelog';
 import Library from './pages/Library';
 import Reader from './pages/Reader';
 
@@ -24,6 +25,7 @@ export default function App() {
 
   const lower = path.toLowerCase();
   if (lower.startsWith('/privacy')) return <Privacy />;
+  if (lower.startsWith('/changelog')) return <Changelog />;
   if (lower.startsWith('/library')) return <Library />;
   const convMatch = path.match(/^\/c\/([^/?#]+)/);
   if (convMatch) return <Reader id={decodeURIComponent(convMatch[1])} />;

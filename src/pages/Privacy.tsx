@@ -348,6 +348,9 @@ function Footer() {
           <a href="/" className="hover:text-zinc-900">
             首页
           </a>
+          <a href="/changelog" className="hover:text-zinc-900">
+            更新日志
+          </a>
           <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">
             联系我们
           </a>

@@ -304,6 +304,7 @@ function Footer() {
           <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
+          <a href="/changelog" className="hover:text-zinc-900">更新日志</a>
           <a href="/privacy" className="hover:text-zinc-900">隐私政策 / Privacy</a>
           <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">联系我们</a>
         </div>
