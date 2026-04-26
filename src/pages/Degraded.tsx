@@ -60,9 +60,6 @@ export default function Degraded() {
             <strong className="text-zinc-900">完全发生在你的设备上</strong>
             ：不上传任何数据、不依赖外部服务、不调用第三方接口。一旦发现异常，立刻在侧栏给出明确结论。
           </p>
-          <p className="text-zinc-500 text-[13.5px]">
-            为了避免被针对性规避，具体的判断字段与算法不在此公开。
-          </p>
         </Section>
 
         <Section title="4. 降智时我能怎么办">
