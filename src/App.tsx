@@ -5,6 +5,7 @@ import Changelog from './pages/Changelog';
 import Library from './pages/Library';
 import Reader from './pages/Reader';
 import Degraded from './pages/Degraded';
+import Install from './pages/Install';
 
 /**
  * Tiny pathname router. We deliberately avoid pulling react-router for
@@ -29,6 +30,7 @@ export default function App() {
   if (lower.startsWith('/changelog')) return <Changelog />;
   if (lower.startsWith('/library')) return <Library />;
   if (lower.startsWith('/degraded')) return <Degraded />;
+  if (lower.startsWith('/install')) return <Install />;
   const convMatch = path.match(/^\/c\/([^/?#]+)/);
   if (convMatch) return <Reader id={decodeURIComponent(convMatch[1])} />;
   return <Home />;

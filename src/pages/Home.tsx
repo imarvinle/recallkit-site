@@ -6,7 +6,7 @@
  */
 
 const STORE_URL =
-  'https://chrome.google.com/webstore/detail/'; // TODO: replace once published
+  'https://chromewebstore.google.com/detail/bannmklgebikoonanccnaalpfbibnlia';
 
 export default function Home() {
   return (
@@ -34,6 +34,7 @@ function Header() {
         <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
           <a href="#features" className="hover:text-zinc-900">功能</a>
           <a href="/degraded" className="hover:text-zinc-900">降智检测</a>
+          <a href="/install" className="hover:text-zinc-900">安装教程</a>
           <a href="#privacy" className="hover:text-zinc-900">隐私</a>
           <a href="#faq" className="hover:text-zinc-900">FAQ</a>
           <a href="/library" className="hover:text-zinc-900">我的归档</a>
@@ -73,8 +74,8 @@ function Hero() {
           <a href={STORE_URL} target="_blank" rel="noreferrer" className="btn-primary">
             <ChromeGlyph /> 免费安装到 Chrome
           </a>
-          <a href="#features" className="btn-outline">
-            查看功能 ↓
+          <a href="/install" className="btn-outline">
+            不会装？看教程 →
           </a>
         </div>
         <p className="mt-6 text-xs text-zinc-400">
@@ -322,6 +323,13 @@ function Cta() {
             <ChromeGlyph /> 免费安装到 Chrome
           </a>
         </div>
+        <p className="mt-4 text-sm text-zinc-500">
+          打不开应用商店？查看{' '}
+          <a href="/install" className="text-sage-deep hover:underline">
+            安装教程
+          </a>
+          。
+        </p>
       </div>
     </section>
   );
@@ -336,6 +344,7 @@ function Footer() {
           <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
+          <a href="/install" className="hover:text-zinc-900">安装教程</a>
           <a href="/changelog" className="hover:text-zinc-900">更新日志</a>
           <a href="/privacy" className="hover:text-zinc-900">隐私政策 / Privacy</a>
           <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">联系我们</a>
