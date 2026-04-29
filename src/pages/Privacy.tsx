@@ -140,14 +140,7 @@ export default function Privacy() {
 
         <Section title="7. 联系方式">
           <p>
-            如有疑问，请通过 Chrome Web Store 商品页的"联系开发者"入口反馈，或发送邮件至：
-            <a
-              href="mailto:2039652520@qq.com"
-              className="ml-1 font-mono text-sage-deep hover:underline"
-            >
-              2039652520@qq.com
-            </a>
-            。
+            如有疑问，请通过 Chrome Web Store 商品页的「联系开发者」入口反馈。
           </p>
         </Section>
 
@@ -215,15 +208,7 @@ export default function Privacy() {
 
         <Section title="Contact">
           <p>
-            Questions or concerns? Use the "Contact developer" link on the Chrome Web Store listing, or
-            email{' '}
-            <a
-              href="mailto:2039652520@qq.com"
-              className="font-mono text-sage-deep hover:underline"
-            >
-              2039652520@qq.com
-            </a>
-            .
+            Questions or concerns? Use the "Contact developer" link on the Chrome Web Store listing.
           </p>
         </Section>
 
@@ -350,9 +335,6 @@ function Footer() {
           </a>
           <a href="/changelog" className="hover:text-zinc-900">
             更新日志
-          </a>
-          <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">
-            联系我们
           </a>
         </div>
       </div>

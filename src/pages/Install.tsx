@@ -133,11 +133,7 @@ export default function Install() {
               ，搜索 <code>chromewebstore.google.com</code> 删除后重试
             </li>
             <li>
-              仍然不行？发邮件到{' '}
-              <a className="text-sage-deep underline" href="mailto:2039652520@qq.com">
-                2039652520@qq.com
-              </a>
-              ，我们可以提供 <code>.crx</code> 离线安装包及操作步骤
+              仍然不行？可以在 Chrome 应用商店详情页留言，我们会跟进给出 <code>.crx</code> 离线安装包及操作步骤
             </li>
           </ul>
         </Section>
@@ -381,9 +377,6 @@ function Footer() {
           </a>
           <a href="/privacy" className="hover:text-zinc-900">
             隐私政策
-          </a>
-          <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">
-            联系我们
           </a>
         </div>
       </div>

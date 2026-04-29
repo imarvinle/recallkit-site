@@ -100,11 +100,11 @@ export default function Degraded() {
 
         <Section title="6. 还有疑问？">
           <p>
-            欢迎邮件联系{' '}
-            <a className="text-sage-deep underline" href="mailto:2039652520@qq.com">
-              2039652520@qq.com
+            我们会持续跟踪 ChatGPT 的行为变化并更新检测策略，相关说明会同步在
+            <a className="mx-1 text-sage-deep underline" href="/changelog">
+              更新日志
             </a>
-            ，我们会持续跟踪 ChatGPT 的行为变化并更新检测策略。
+            里。
           </p>
         </Section>
       </article>
@@ -197,9 +197,6 @@ function Footer() {
           </a>
           <a href="/changelog" className="hover:text-zinc-900">
             更新日志
-          </a>
-          <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">
-            联系我们
           </a>
         </div>
       </div>

@@ -166,9 +166,6 @@ function Footer() {
           <a href="/privacy" className="hover:text-zinc-900">
             隐私政策
           </a>
-          <a href="mailto:2039652520@qq.com" className="hover:text-zinc-900">
-            联系我们
-          </a>
         </div>
       </div>
     </footer>
