@@ -24,12 +24,8 @@ import type {
 
 /**
  * The Chrome-Web-Store-assigned extension id.
- *
- * NOTE: Update this once the extension is published — Chrome assigns a
- * new public id at publish time unless we pin it via a `key` field in
- * manifest.json. The dev id below is what the unpacked build uses.
  */
-const EXT_ID = 'paahekbogdbgcgjkbgkkdicoddofghha';
+const EXT_ID = 'bannmklgebikoonanccnaalpfbibnlia';
 
 declare global {
   interface Window {
