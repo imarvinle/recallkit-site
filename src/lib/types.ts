@@ -4,6 +4,14 @@
  * no compile-time dependency on the extension repo.
  */
 
+/**
+ * Mirror of the extension's `ROW_SCHEMA_VERSION`. The bridge does not
+ * negotiate this — every row carries its own `_v` so the site can tell
+ * legacy rows from modern ones independently. Keep this constant in
+ * sync with the value the extension stamps on writes.
+ */
+export const ROW_SCHEMA_VERSION = 2;
+
 export type MessageRole = 'user' | 'assistant' | 'system' | 'tool' | 'unknown';
 
 export type ContentPartType =
@@ -26,6 +34,8 @@ export interface ContentPart {
 }
 
 export interface ArchiveMessage {
+  /** Row schema version stamped by the extension at write time. */
+  _v?: number;
   id: string;
   conversation_id: string;
   parent_id: string | null;
@@ -37,6 +47,8 @@ export interface ArchiveMessage {
 }
 
 export interface ArchiveConversation {
+  /** Row schema version stamped by the extension at write time. */
+  _v?: number;
   id: string;
   title: string;
   created_at: string;
@@ -59,6 +71,8 @@ export interface ArchiveConversation {
 }
 
 export interface ConversationIndexRow {
+  /** Row schema version stamped by the extension at write time. */
+  _v?: number;
   id: string;
   title: string;
   created_at: string;

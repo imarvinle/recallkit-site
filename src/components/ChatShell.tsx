@@ -18,6 +18,7 @@ import {
   listConversations,
 } from '../lib/extension-bridge';
 import type { ConversationIndexRow } from '../lib/types';
+import { ROW_SCHEMA_VERSION } from '../lib/types';
 
 const PROBE_TIMEOUT_HINT_MS = 3500;
 const RECENT_SHOWN = 12;
@@ -491,6 +492,13 @@ interface AccountSummary {
   workspace_plan_type?: string;
   workspace_structure?: 'personal' | 'workspace' | 'unknown';
   count: number;
+  /**
+   * Highest `_v` (row schema version) seen across this account's rows.
+   * Used to distinguish "all rows are pre-workspace legacy backups"
+   * from "rows are modern but workspace fields happened to come back
+   * empty". Undefined if every row also lacks `_v` (treated as 0).
+   */
+  maxV: number;
 }
 
 const PLAN_DISPLAY: Record<string, string> = {
@@ -536,9 +544,15 @@ function accountSecondaryLabel(a: AccountSummary): string {
   if (a.workspace_structure === 'personal') {
     return plan ? `${plan} · 个人空间` : '个人空间';
   }
-  // Legacy backup before workspace identity was captured. Make this
-  // explicit so the user knows why the row is featureless.
-  return `历史归档 · 重新备份后会显示 Team 名称`;
+  // No workspace identity captured. Use the row schema version to
+  // distinguish two distinct cases that look identical at the field
+  // level — without `_v` we'd label real personal accounts (whose
+  // workspace fetch happened to fail) as "历史归档", which confused
+  // users on first launch.
+  if (a.maxV < ROW_SCHEMA_VERSION) {
+    return '历史归档 · 重新备份后会显示';
+  }
+  return '未识别 · 刷新对话后会显示';
 }
 
 function accountInitial(a: AccountSummary): string {
@@ -552,14 +566,18 @@ function accountInitial(a: AccountSummary): string {
 function collectAccounts(rows: ConversationIndexRow[]): AccountSummary[] {
   const map = new Map<string, AccountSummary>();
   let untagged = 0;
+  let untaggedMaxV = 0;
   for (const r of rows) {
+    const rowV = r._v ?? 0;
     if (!r.account_id) {
       untagged++;
+      if (rowV > untaggedMaxV) untaggedMaxV = rowV;
       continue;
     }
     const cur = map.get(r.account_id);
     if (cur) {
       cur.count++;
+      if (rowV > cur.maxV) cur.maxV = rowV;
       if (!cur.email && r.account_email) cur.email = r.account_email;
       if (!cur.workspace_name && r.workspace_name) cur.workspace_name = r.workspace_name;
       if (!cur.workspace_plan_type && r.workspace_plan_type)
@@ -574,12 +592,18 @@ function collectAccounts(rows: ConversationIndexRow[]): AccountSummary[] {
         workspace_plan_type: r.workspace_plan_type,
         workspace_structure: r.workspace_structure,
         count: 1,
+        maxV: rowV,
       });
     }
   }
   const tagged = Array.from(map.values()).sort((a, b) => b.count - a.count);
   if (untagged > 0) {
-    tagged.push({ id: 'unknown', count: untagged, workspace_structure: 'unknown' });
+    tagged.push({
+      id: 'unknown',
+      count: untagged,
+      workspace_structure: 'unknown',
+      maxV: untaggedMaxV,
+    });
   }
   return tagged;
 }

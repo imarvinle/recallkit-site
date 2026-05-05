@@ -24,8 +24,16 @@ import type {
 
 /**
  * The Chrome-Web-Store-assigned extension id.
+ *
+ * Dev (`npm run dev`) talks to the locally loaded unpacked build; production
+ * builds talk to the published store extension. Set `VITE_EXT_ID` in
+ * `.env.local` to override (e.g. to debug the store build from a dev server).
  */
-const EXT_ID = 'bannmklgebikoonanccnaalpfbibnlia';
+const EXT_ID =
+  (import.meta.env.VITE_EXT_ID as string | undefined) ??
+  (import.meta.env.DEV
+    ? 'paahekbogdbgcgjkbgkkdicoddofghha'
+    : 'bannmklgebikoonanccnaalpfbibnlia');
 
 declare global {
   interface Window {
@@ -96,7 +104,27 @@ function call<T>(message: unknown, timeoutMs = 5000): Promise<T> {
 
 export interface PingResponse {
   ok: true;
+  /** Manifest version, e.g. "1.1.0". Show in UI; do not feature-gate on this. */
   version: string;
+  /**
+   * Wire-protocol version the extension speaks. Bumped when message
+   * semantics change. Older extensions omit this — treat absence as 0.
+   */
+  protocol?: number;
+  /**
+   * Granular capability flags advertised by the extension. Prefer
+   * checking these over `protocol` when deciding whether a feature
+   * is available. Possible values include:
+   *   - 'workspace'    workspace_* fields are populated on rows
+   *   - 'projects'     project_* fields are populated
+   *   - 'assets'       SITE_GET_ASSET works
+   *   - 'row-version'  rows carry `_v` for legacy detection
+   */
+  capabilities?: string[];
+}
+
+export function hasCapability(p: PingResponse, name: string): boolean {
+  return Array.isArray(p.capabilities) && p.capabilities.includes(name);
 }
 export interface ListResponse {
   ok: true;
@@ -127,10 +155,17 @@ export const getAssetUrl = (id: string) =>
 export async function detectExtension(): Promise<{
   installed: boolean;
   version?: string;
+  protocol?: number;
+  capabilities?: string[];
 }> {
   try {
     const r = await ping();
-    return { installed: true, version: r.version };
+    return {
+      installed: true,
+      version: r.version,
+      protocol: r.protocol,
+      capabilities: r.capabilities,
+    };
   } catch {
     return { installed: false };
   }
