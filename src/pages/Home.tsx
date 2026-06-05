@@ -79,7 +79,7 @@ function Hero() {
           </a>
         </div>
         <p className="mt-6 text-xs text-zinc-400">
-          Manifest V3 · 完全开源思路 · 兼容 Chrome / Edge / Brave / Arc
+          兼容 Chrome / Edge / Brave / Arc
         </p>
       </div>
     </section>
@@ -268,7 +268,7 @@ function Faq() {
     },
     {
       q: '会和 ChatGPT 网页冲突吗？',
-      a: '不会。Recallkit 用 Manifest V3 标准方式读取你的 ChatGPT 会话；备份在后台静默触发，对网页无任何视觉干扰。',
+      a: '不会。Recallkit 只是在后台静默读取并备份你的 ChatGPT 会话，不修改页面、不注入按钮，对你正常使用网页没有任何视觉干扰。',
     },
     {
       q: '会让 ChatGPT 限流吗？',
