@@ -25,17 +25,6 @@ export default function Privacy() {
             <strong className="text-zinc-900">我们不采集任何个人身份信息（PII）</strong>，
             不收集你的聊天内容、邮箱、IP 地址或使用统计。整个插件不向任何分析、广告或日志后端发送数据。
           </p>
-          <p>
-            唯一会向我们后端发起的请求是远程配置接口
-            <code className="mx-1 inline rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[13px]">
-              GET https://gpt.how2cs.cn/api/extension/config
-            </code>
-            。该请求 <strong>不携带 cookie、不携带任何用户标识</strong>，仅返回静态的版本号和到期提醒阈值，用于：
-          </p>
-          <ul className="list-disc space-y-1 pl-6">
-            <li>提示有新版本可升级</li>
-            <li>提示订阅快到期可以续费</li>
-          </ul>
         </Section>
 
         <Section title="2. 数据存放在哪里">
@@ -57,11 +46,6 @@ export default function Privacy() {
                 <td>偏好设置（实时备份开关、是否拉图等）</td>
                 <td>chrome.storage.local</td>
                 <td>仅本机可读</td>
-              </tr>
-              <tr>
-                <td>远程配置缓存</td>
-                <td>chrome.storage.local</td>
-                <td>24 小时 TTL，不含个人数据</td>
               </tr>
               <tr>
                 <td>ChatGPT 登录会话 token</td>
@@ -108,7 +92,7 @@ export default function Privacy() {
                     storage
                   </code>
                 </td>
-                <td>保存你的偏好和远程配置缓存</td>
+                <td>保存你的偏好设置</td>
               </tr>
               <tr>
                 <td>
@@ -172,22 +156,12 @@ export default function Privacy() {
             addresses, IP addresses, telemetry, or usage analytics. The extension does not send data to
             any analytics, ad, or logging backend.
           </p>
-          <p>
-            The only request the extension makes to our own infrastructure is the remote-config endpoint{' '}
-            <code className="inline rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[13px]">
-              GET https://gpt.how2cs.cn/api/extension/config
-            </code>
-            . That request <strong>carries no cookies and no user identifier</strong>. It returns a
-            static JSON document with the latest available version number and the expiry-reminder
-            thresholds.
-          </p>
         </Section>
 
         <Section title="Where data is stored">
           <p>
             All conversation data is persisted in your browser's local IndexedDB; preferences in{' '}
-            <code className="font-mono">chrome.storage.local</code>. The remote-config response is
-            cached for 24 hours and contains no personal information. The extension never reads or
+            <code className="font-mono">chrome.storage.local</code>. The extension never reads or
             stores your ChatGPT session token.
           </p>
         </Section>
