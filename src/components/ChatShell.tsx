@@ -237,7 +237,7 @@ function Sidebar({
     <aside className="flex h-screen w-[280px] shrink-0 flex-col bg-[#f9f9f9] sticky top-0">
       {/* Top: logo + collapse toggle */}
       <div className="flex items-center justify-between px-3 pt-3">
-        <a href="/" className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#ececec]" title="Recallkit 主页">
+        <a href="/" className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#ececec]" title="KeepChat AI 主页">
           <Logo />
         </a>
         <button
@@ -278,7 +278,7 @@ function Sidebar({
           <p className="px-3 py-4 text-xs text-red-500">读取失败：{error}</p>
         )}
         {installed && !loading && !error && rows.length === 0 && (
-          <p className="px-3 py-4 text-xs text-zinc-400">还没有备份的会话。打开 ChatGPT，让 Recallkit 开始实时备份。</p>
+          <p className="px-3 py-4 text-xs text-zinc-400">还没有备份的会话。打开 ChatGPT，让 KeepChat AI 开始实时备份。</p>
         )}
 
         {projects.length > 0 && (
@@ -473,7 +473,7 @@ function InstallPrompt() {
     <div className="mx-2 mt-2 rounded-xl border border-zinc-200 bg-white p-3 text-[12.5px] leading-relaxed text-zinc-600">
       <p className="font-medium text-zinc-900">未检测到扩展</p>
       <p className="mt-1">
-        本页面只是 Recallkit 扩展的在线阅读窗口；请先安装扩展并备份至少一条会话。
+        本页面只是 KeepChat AI 扩展的在线阅读窗口；请先安装扩展并备份至少一条会话。
       </p>
       <a
         href="/"

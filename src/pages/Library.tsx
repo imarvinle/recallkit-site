@@ -11,7 +11,7 @@ import ChatShell from '../components/ChatShell';
 
 export default function Library() {
   useEffect(() => {
-    document.title = 'Recallkit · 我的归档';
+    document.title = 'KeepChat AI · 我的归档';
   }, []);
   return (
     <ChatShell title="ChatGPT" topRight={<TopRightIcons />}>
@@ -28,7 +28,7 @@ function EmptyState() {
       </h2>
       <Composer />
       <p className="mt-6 text-xs text-zinc-400">
-        本站为 Recallkit 扩展的在线阅读窗口；左侧选一条会话开始阅读。
+        本站为 KeepChat AI 扩展的在线阅读窗口；左侧选一条会话开始阅读。
       </p>
     </div>
   );

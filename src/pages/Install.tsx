@@ -1,6 +1,6 @@
 /**
  * Chrome installation guide page. Walks new users through installing
- * Recallkit from the Chrome Web Store, pinning the toolbar icon,
+ * KeepChat AI from the Chrome Web Store, pinning the toolbar icon,
  * verifying it on chatgpt.com, and falling back to manual install for
  * users who can't reach the Web Store.
  *
@@ -15,7 +15,7 @@ const STORE_URL =
 
 export default function Install() {
   useEffect(() => {
-    document.title = 'Chrome 安装教程 · Recallkit';
+    document.title = 'Chrome 安装教程 · KeepChat AI';
   }, []);
 
   return (
@@ -31,7 +31,7 @@ export default function Install() {
                 title: '打开 Chrome 应用商店页面',
                 body: (
                   <>
-                    点击下方按钮直接跳转 Recallkit 的应用商店详情页：
+                    点击下方按钮直接跳转 KeepChat AI 的应用商店详情页：
                     <div className="mt-3">
                       <a
                         href={STORE_URL}
@@ -65,21 +65,21 @@ export default function Install() {
                 title: '在弹窗中点击「添加扩展程序」',
                 body: (
                   <p>
-                    Chrome 会列出 Recallkit 需要的权限（仅限 chatgpt.com），点击
+                    Chrome 会列出 KeepChat AI 需要的权限（仅限 chatgpt.com），点击
                     <strong className="text-zinc-900"> 添加扩展程序 / Add extension</strong>
-                    。安装一般在 1–2 秒内完成，工具栏右上角会出现 Recallkit 的图标。
+                    。安装一般在 1–2 秒内完成，工具栏右上角会出现 KeepChat AI 的图标。
                   </p>
                 ),
               },
               {
-                title: '把 Recallkit 固定到工具栏',
+                title: '把 KeepChat AI 固定到工具栏',
                 body: (
                   <p>
                     Chrome 默认会把新安装的扩展折叠在「拼图」图标
                     <span className="mx-1 inline-block rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[13px]">
                       🧩
                     </span>
-                    后面。点击拼图，找到 Recallkit 后点击右侧的
+                    后面。点击拼图，找到 KeepChat AI 后点击右侧的
                     <strong className="text-zinc-900"> 图钉 </strong>
                     图标，把它固定到工具栏，方便随时打开侧栏。
                   </p>
@@ -98,7 +98,7 @@ export default function Install() {
                     >
                       chatgpt.com
                     </a>
-                    ，刷新页面后点击工具栏上的 Recallkit 图标，能看到侧栏弹出即代表安装成功。
+                    ，刷新页面后点击工具栏上的 KeepChat AI 图标，能看到侧栏弹出即代表安装成功。
                     第一次进入会提示首次同步，等待几秒就可以使用全文搜索、备份、降智检测等功能。
                   </p>
                 ),
@@ -194,7 +194,7 @@ export default function Install() {
             </li>
             <li>
               <strong className="text-zinc-900">在侧栏里打开「降智检测」</strong>
-              ：发新消息后 Recallkit 会自动判断你是否被路由到了低规格模型。
+              ：发新消息后 KeepChat AI 会自动判断你是否被路由到了低规格模型。
               不了解什么是降智？看
               <a className="ml-1 text-sage-deep underline" href="/degraded">
                 /degraded 说明页
@@ -208,7 +208,7 @@ export default function Install() {
             items={[
               {
                 q: '需要登录账号吗？',
-                a: '不需要。Recallkit 不做账号体系、不存登录态，安装完直接用即可。',
+                a: '不需要。KeepChat AI 不做账号体系、不存登录态，安装完直接用即可。',
               },
               {
                 q: '会读取我的 ChatGPT 密码吗？',
@@ -216,7 +216,7 @@ export default function Install() {
               },
               {
                 q: '装上后看不到图标？',
-                a: '点击工具栏上的「拼图」🧩 图标展开扩展列表，找到 Recallkit 后点旁边的图钉就会显示在工具栏。',
+                a: '点击工具栏上的「拼图」🧩 图标展开扩展列表，找到 KeepChat AI 后点旁边的图钉就会显示在工具栏。',
               },
               {
                 q: '会自动更新吗？',
@@ -224,7 +224,7 @@ export default function Install() {
               },
               {
                 q: '想卸载怎么办？',
-                a: '右键工具栏上的 Recallkit 图标 → 选择「从 Chrome 中移除」即可。卸载后所有本地数据会一并清除。',
+                a: '右键工具栏上的 KeepChat AI 图标 → 选择「从 Chrome 中移除」即可。卸载后所有本地数据会一并清除。',
               },
             ]}
           />
@@ -241,7 +241,7 @@ function Navbar() {
       <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
         <a href="/" className="flex items-center gap-2 text-zinc-900">
           <Logo />
-          <span className="font-semibold tracking-tight">Recallkit</span>
+          <span className="font-semibold tracking-tight">KeepChat AI</span>
         </a>
         <a href="/" className="text-sm text-zinc-500 hover:text-zinc-900">
           ← 返回首页
@@ -259,7 +259,7 @@ function Hero() {
           Install · 安装教程
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-          一分钟在 Chrome 上装好 Recallkit。
+          一分钟在 Chrome 上装好 KeepChat AI。
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-zinc-600">
           全程只需要点几下「下一步」，从下一条 ChatGPT 对话开始就会被自动备份并实时检测降智。
@@ -366,7 +366,7 @@ function Footer() {
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-6">
         <div className="flex items-center gap-2">
           <Logo small />
-          <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} KeepChat AI. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="/" className="hover:text-zinc-900">

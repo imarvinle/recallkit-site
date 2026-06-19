@@ -1,7 +1,7 @@
 /**
  * "What is ChatGPT 降智 / model degradation" page.
  *
- * Linked from the Recallkit extension whenever the in-browser detector
+ * Linked from the KeepChat AI extension whenever the in-browser detector
  * spots that ChatGPT silently swapped the user's selected model for a
  * cheaper one. The page explains, in plain Chinese, what's happening
  * and what the user can do about it.
@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 
 export default function Degraded() {
   useEffect(() => {
-    document.title = 'ChatGPT 降智是什么？· Recallkit';
+    document.title = 'ChatGPT 降智是什么？· KeepChat AI';
   }, []);
 
   return (
@@ -49,9 +49,9 @@ export default function Degraded() {
           </p>
         </Section>
 
-        <Section title="3. Recallkit 是怎么检测的">
+        <Section title="3. KeepChat AI 是怎么检测的">
           <p>
-            Recallkit 会在你每次对话发生时，
+            KeepChat AI 会在你每次对话发生时，
             <strong className="text-zinc-900">读取浏览器和 ChatGPT 之间的若干关键信号</strong>
             ，并做交叉校验，判断你这条请求是否被路由到了非预期的模型。
           </p>
@@ -93,7 +93,7 @@ export default function Degraded() {
             它可能基于训练数据回答出旧型号，也可能因为系统提示而误报。
           </p>
           <p>
-            而 Recallkit 读取的是 <strong className="text-zinc-900">接口元数据</strong>
+            而 KeepChat AI 读取的是 <strong className="text-zinc-900">接口元数据</strong>
             ，这是后端实际路由信息，不依赖模型自我描述。
           </p>
         </Section>
@@ -119,7 +119,7 @@ function Navbar() {
       <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
         <a href="/" className="flex items-center gap-2 text-zinc-900">
           <Logo />
-          <span className="font-semibold tracking-tight">Recallkit</span>
+          <span className="font-semibold tracking-tight">KeepChat AI</span>
         </a>
         <a href="/" className="text-sm text-zinc-500 hover:text-zinc-900">
           ← 返回首页
@@ -140,7 +140,7 @@ function Hero() {
           你选的模型，可能根本不是你拿到的。
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-zinc-600">
-          ChatGPT 会在不通知你的情况下把请求悄悄路由到低规格模型。Recallkit 通过读取接口元数据，本地直接告诉你这件事是否正在发生。
+          ChatGPT 会在不通知你的情况下把请求悄悄路由到低规格模型。KeepChat AI 通过读取接口元数据，本地直接告诉你这件事是否正在发生。
         </p>
       </div>
     </section>
@@ -151,7 +151,7 @@ function Tldr() {
   const lines = [
     '前端显示的模型 ≠ 实际运行的模型',
     'OpenAI 不会主动告知你被降智',
-    'Recallkit 通过元数据本地比对，结果可信',
+    'KeepChat AI 通过元数据本地比对，结果可信',
     '换网络 / 重登 / 间歇使用，多数情况可恢复',
   ];
   return (
@@ -189,7 +189,7 @@ function Footer() {
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-6">
         <div className="flex items-center gap-2">
           <Logo small />
-          <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} KeepChat AI. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="/" className="hover:text-zinc-900">

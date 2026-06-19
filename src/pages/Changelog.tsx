@@ -25,7 +25,7 @@ const RELEASES: Release[] = [
       '边聊边备份：在 ChatGPT 网页边聊边自动入档，新消息几秒内就保存到本地，悬浮球的状态点会告诉你它正在工作',
       '批量备份：「仅未备份」一键勾选还没存过的会话；遇到限流会自动等候并提示「立即重试 / 1 小时后再来」；偶尔失败的会话下次会自动补回来',
       '工作区识别：自动识别 Team / Personal / Plus / Pro 工作区，按工作区切换查看，多账号多空间互不干扰',
-      '网页阅读：访问 recallkit.org/library 在更宽的页面里查看本地档案，Markdown、代码、图片大图都能完整呈现，数据全程留在你的电脑',
+      '网页阅读：访问 keepchatai.com/library 在更宽的页面里查看本地档案，Markdown、代码、图片大图都能完整呈现，数据全程留在你的电脑',
       '导入 / 导出：兼容官方 ChatGPT 导出包、Markdown、JSON 三种格式互转，单条或一次打包都行',
       '隐私边界：所有数据都保存在浏览器本地，不上传任何分析、广告或日志服务；只有版本检查会联网，且不携带任何身份信息',
     ],
@@ -34,7 +34,7 @@ const RELEASES: Release[] = [
 
 export default function Changelog() {
   useEffect(() => {
-    document.title = '更新日志 · Recallkit';
+    document.title = '更新日志 · KeepChat AI';
   }, []);
 
   return (
@@ -123,7 +123,7 @@ function Navbar() {
       <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
         <a href="/" className="flex items-center gap-2 text-zinc-900">
           <Logo />
-          <span className="font-semibold tracking-tight">Recallkit</span>
+          <span className="font-semibold tracking-tight">KeepChat AI</span>
         </a>
         <a href="/" className="text-sm text-zinc-500 hover:text-zinc-900">
           ← 返回首页
@@ -141,7 +141,7 @@ function Hero() {
           Changelog · 更新日志
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-          Recallkit 都改了什么。
+          KeepChat AI 都改了什么。
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-zinc-600">
           每个版本写下你能用上的变化——新增功能、UX 调整、修了哪些坑。内部重构 / 代码清理不在此列。
@@ -157,7 +157,7 @@ function Footer() {
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-6">
         <div className="flex items-center gap-2">
           <Logo small />
-          <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} KeepChat AI. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="/" className="hover:text-zinc-900">

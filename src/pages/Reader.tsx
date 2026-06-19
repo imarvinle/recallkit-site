@@ -35,12 +35,12 @@ export default function Reader({ id }: { id: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    document.title = '加载中… · Recallkit';
+    document.title = '加载中… · KeepChat AI';
     void (async () => {
       try {
         const r = await getConversation(id);
         if (cancelled) return;
-        document.title = `${r.conversation.title || '会话'} · Recallkit`;
+        document.title = `${r.conversation.title || '会话'} · KeepChat AI`;
         setStage({ kind: 'ready', ...r });
       } catch (err) {
         if (cancelled) return;
@@ -95,7 +95,7 @@ export default function Reader({ id }: { id: string }) {
               ))}
             </div>
             <div className="mt-12 border-t border-zinc-100 pt-6 text-center text-xs text-zinc-400">
-              对话结束 · 数据从你浏览器的 Recallkit 扩展直接读取，未经过任何服务器
+              对话结束 · 数据从你浏览器的 KeepChat AI 扩展直接读取，未经过任何服务器
             </div>
           </>
         )}

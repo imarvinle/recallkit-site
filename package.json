@@ -1,7 +1,7 @@
 {
-  "name": "recallkit-site",
+  "name": "keepchatai-site",
   "version": "0.1.0",
-  "description": "Recallkit — backup, archive & search every ChatGPT conversation locally. Marketing site.",
+  "description": "KeepChat AI — backup, archive & search every ChatGPT conversation locally. Marketing site.",
   "private": true,
   "type": "module",
   "scripts": {

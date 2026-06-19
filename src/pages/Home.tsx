@@ -1,5 +1,5 @@
 /**
- * Recallkit landing page — single-screen marketing for the Chrome
+ * KeepChat AI landing page — single-screen marketing for the Chrome
  * extension. Optimised for first-load SEO + Chrome Web Store reviewer
  * skim: hero with single primary CTA, feature grid, privacy callout,
  * use-cases, FAQ, footer with privacy policy link.
@@ -29,7 +29,7 @@ function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a href="/" className="flex items-center gap-2">
           <Logo />
-          <span className="font-semibold tracking-tight">Recallkit</span>
+          <span className="font-semibold tracking-tight">KeepChat AI</span>
         </a>
         <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
           <a href="#features" className="hover:text-zinc-900">功能</a>
@@ -65,7 +65,7 @@ function Hero() {
           <span className="italic text-sage-deep">留住每一次对话。</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
-          Recallkit 在你聊天的同时，
+          KeepChat AI 在你聊天的同时，
           <strong className="text-zinc-900">实时识别 ChatGPT 是否被悄悄降智</strong>
           ，并把每一条会话静默归档到浏览器本地。
           <strong className="text-zinc-900">不上传服务器，不收集隐私，不依赖账号注册。</strong>
@@ -193,7 +193,7 @@ function Privacy() {
             数据从不离开<br />你的电脑。
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
-            隐私不是营销话术，而是产品边界。Recallkit
+            隐私不是营销话术，而是产品边界。KeepChat AI
             的每个功能都设计成"在你浏览器里就完成"——没有云、没有账号、没有服务器，
             就连版本检查都不会带任何用户标识。
           </p>
@@ -244,7 +244,7 @@ function UseCases() {
         <div className="mb-14 max-w-3xl">
           <p className="text-sm font-medium uppercase tracking-widest text-sage-deep">Use cases · 适用场景</p>
           <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            谁在用 Recallkit？
+            谁在用 KeepChat AI？
           </h2>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -263,12 +263,12 @@ function UseCases() {
 function Faq() {
   const items = [
     {
-      q: '什么是"降智"？Recallkit 怎么发现的？',
-      a: '"降智"指 ChatGPT 在不告知用户的情况下，把请求路由到比 UI 选择更低规格的模型。Recallkit 在你浏览器本地交叉校验，发现实际运行的模型与你选择的不一致时立刻给出"已降智"结论。详情见 /degraded 说明页。',
+      q: '什么是"降智"？KeepChat AI 怎么发现的？',
+      a: '"降智"指 ChatGPT 在不告知用户的情况下，把请求路由到比 UI 选择更低规格的模型。KeepChat AI 在你浏览器本地交叉校验，发现实际运行的模型与你选择的不一致时立刻给出"已降智"结论。详情见 /degraded 说明页。',
     },
     {
       q: '会和 ChatGPT 网页冲突吗？',
-      a: '不会。Recallkit 只是在后台静默读取并备份你的 ChatGPT 会话，不修改页面、不注入按钮，对你正常使用网页没有任何视觉干扰。',
+      a: '不会。KeepChat AI 只是在后台静默读取并备份你的 ChatGPT 会话，不修改页面、不注入按钮，对你正常使用网页没有任何视觉干扰。',
     },
     {
       q: '会让 ChatGPT 限流吗？',
@@ -341,7 +341,7 @@ function Footer() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6">
         <div className="flex items-center gap-2">
           <Logo small />
-          <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} KeepChat AI. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="/install" className="hover:text-zinc-900">安装教程</a>

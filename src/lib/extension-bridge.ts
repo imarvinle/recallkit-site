@@ -1,8 +1,8 @@
 /**
- * Bridge to the Recallkit Chrome extension.
+ * Bridge to the KeepChat AI Chrome extension.
  *
  * We rely on `manifest.externally_connectable.matches` to whitelist
- * recallkit.org as an allowed sender, then talk to the extension's
+ * keepchatai.com as an allowed sender, then talk to the extension's
  * service worker via `chrome.runtime.sendMessage(EXT_ID, …)`.
  *
  * The extension SW responds to four messages, all read-only:
@@ -65,7 +65,7 @@ function call<T>(message: unknown, timeoutMs = 5000): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const send = window.chrome?.runtime?.sendMessage;
     if (typeof send !== 'function') {
-      reject(new BridgeError('no-extension', '未检测到 Recallkit 扩展'));
+      reject(new BridgeError('no-extension', '未检测到 KeepChat AI 扩展'));
       return;
     }
     const timer = window.setTimeout(() => {

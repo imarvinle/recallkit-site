@@ -1,7 +1,7 @@
-# Recallkit · Marketing Site
+# KeepChat AI · Website
 
-> Public landing page at [recallkit.org](https://recallkit.org/) for the
-> **Archive — ChatGPT Backup & Export** browser extension.
+> Public landing page at [keepchatai.com](https://keepchatai.com/) for the
+> **KeepChat AI — ChatGPT Backup, Search & Degrade Detection** browser extension.
 
 Stack: Vite + React 18 + TypeScript + Tailwind CSS. Static output, deploys
 to anywhere that serves files (Vercel / Netlify / Cloudflare Pages /
@@ -27,9 +27,9 @@ Point at this repo, no special config. Output dir: `dist`.
 Build cmd: `pnpm build` · Output dir: `dist`
 
 ### Self-hosted nginx
-Just rsync `dist/` somewhere and serve. Make sure `/privacy`, `/terms`
-fall back to the SPA's `index.html` if you add subroutes later (currently
-single page so no fallback needed).
+Just rsync `dist/` somewhere and serve. Make sure `/privacy`, `/library`,
+`/changelog`, `/degraded`, `/install`, and `/c/:id` fall back to the SPA's
+`index.html`.
 
 ## Structure
 
@@ -37,22 +37,26 @@ single page so no fallback needed).
 index.html             SEO meta + OG + JSON-LD schema
 src/
   main.tsx             React entry
-  App.tsx              Routes home only for now
-  pages/Home.tsx       The landing page itself
+  App.tsx              Tiny pathname router
+  pages/Home.tsx       Landing page
+  pages/Privacy.tsx    Privacy policy
+  pages/Library.tsx    Extension-backed archive reader shell
+  pages/Reader.tsx     Single conversation reader
+  pages/Changelog.tsx  Release notes
+  pages/Degraded.tsx   ChatGPT model degradation explainer
+  pages/Install.tsx    Chrome installation guide
   index.css            Tailwind base + utility classes (btn, card, …)
 public/
   favicon.svg          Sage-deep logomark (matches the extension)
   robots.txt           Allow all, sitemap pointer
-  sitemap.xml          Single URL — extend when adding pages
+  sitemap.xml          Public route list
 ```
 
 ## Roadmap
 
-- [ ] `/privacy` page (render `docs/privacy-en.md` from the extension repo)
-- [ ] `/changelog` page (mirrors the extension's release notes)
 - [ ] og-image.png — render a hero card to PNG for OpenGraph previews
 - [ ] i18n route `/en` for English-first audiences
-- [ ] Anchor links from extension popup → recallkit.org/<feature>
+- [ ] Anchor links from extension popup → keepchatai.com/<feature>
 
 ## Brand
 

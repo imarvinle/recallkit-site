@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 export default function Privacy() {
   useEffect(() => {
-    document.title = '隐私政策 · Recallkit | Privacy Policy';
+    document.title = '隐私政策 · KeepChat AI | Privacy Policy';
   }, []);
 
   return (
@@ -206,7 +206,7 @@ function Navbar() {
       <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
         <a href="/" className="flex items-center gap-2 text-zinc-900">
           <Logo />
-          <span className="font-semibold tracking-tight">Recallkit</span>
+          <span className="font-semibold tracking-tight">KeepChat AI</span>
         </a>
         <a href="/" className="text-sm text-zinc-500 hover:text-zinc-900">
           ← 返回首页
@@ -227,7 +227,7 @@ function Hero() {
           数据从不离开你的电脑。
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-zinc-600">
-          隐私不是营销话术，而是产品边界。本页介绍 Recallkit 如何保护你的 ChatGPT 聊天记录
+          隐私不是营销话术，而是产品边界。本页介绍 KeepChat AI 如何保护你的 ChatGPT 聊天记录
           —— 即"什么也不做"。
         </p>
       </div>
@@ -301,7 +301,7 @@ function Footer() {
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-6">
         <div className="flex items-center gap-2">
           <Logo small />
-          <span>© {new Date().getFullYear()} Recallkit. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} KeepChat AI. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="/" className="hover:text-zinc-900">
