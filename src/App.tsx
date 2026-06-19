@@ -10,8 +10,8 @@ import {
   ChatGptArchivePage,
   ChatGptBackupPage,
   ChatGptExportPage,
-  OfficialExportGuidePage,
 } from './pages/SeoLanding';
+import { GuideArticle, GuidesHub } from './pages/Guides';
 
 /**
  * Tiny pathname router. We deliberately avoid pulling react-router for
@@ -40,8 +40,10 @@ export default function App() {
   if (lower.startsWith('/chatgpt-backup')) return <ChatGptBackupPage />;
   if (lower.startsWith('/chatgpt-export')) return <ChatGptExportPage />;
   if (lower.startsWith('/chatgpt-archive')) return <ChatGptArchivePage />;
-  if (lower.startsWith('/guides/chatgpt-official-export-vs-keepchat')) {
-    return <OfficialExportGuidePage />;
+  const guideMatch = lower.match(/^\/guides\/?([^/?#]*)/);
+  if (guideMatch) {
+    const slug = guideMatch[1];
+    return slug ? <GuideArticle slug={slug} /> : <GuidesHub />;
   }
   const convMatch = path.match(/^\/c\/([^/?#]+)/);
   if (convMatch) return <Reader id={decodeURIComponent(convMatch[1])} />;

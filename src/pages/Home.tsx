@@ -48,6 +48,7 @@ function Header() {
           <a href="/chatgpt-backup" className="hover:text-zinc-900">聊天备份</a>
           <a href="/chatgpt-export" className="hover:text-zinc-900">记录导出</a>
           <a href="/chatgpt-archive" className="hover:text-zinc-900">本地归档</a>
+          <a href="/guides" className="hover:text-zinc-900">导出教程</a>
           <a href="/degraded" className="hover:text-zinc-900">降智检测</a>
           <a href="/install" className="hover:text-zinc-900">安装教程</a>
           <a href="#privacy" className="hover:text-zinc-900">隐私</a>
@@ -371,6 +372,7 @@ function Footer() {
           <a href="/install" className="hover:text-zinc-900">安装教程</a>
           <a href="/chatgpt-backup" className="hover:text-zinc-900">聊天备份</a>
           <a href="/chatgpt-export" className="hover:text-zinc-900">记录导出</a>
+          <a href="/guides" className="hover:text-zinc-900">ChatGPT 导出教程</a>
           <a href="/changelog" className="hover:text-zinc-900">更新日志</a>
           <a href="/privacy" className="hover:text-zinc-900">隐私政策 / Privacy</a>
         </div>

@@ -121,9 +121,9 @@ const pages = {
     ],
     related: [
       { label: '聊天记录导出', href: '/chatgpt-export', desc: '把备份后的会话导出为 Markdown / JSON / ZIP。' },
+      { label: 'ChatGPT 聊天记录备份教程', href: '/guides/backup-chatgpt-conversations', desc: '系统了解自动备份、本地归档和换电脑迁移。' },
       { label: '本地会话归档', href: '/chatgpt-archive', desc: '用全文搜索和阅读视图管理长期历史记录。' },
-      { label: '安装教程', href: '/install', desc: '一分钟安装到 Chrome、Edge、Brave 或 Arc。' },
-      { label: '隐私政策', href: '/privacy', desc: '了解为什么聊天内容不会离开你的电脑。' },
+      { label: 'ChatGPT 批量导出聊天记录', href: '/guides/bulk-export-chatgpt-conversations', desc: '批量导出 Markdown、JSON 或 ZIP 做长期备份。' },
     ],
   },
   export: {
@@ -226,9 +226,9 @@ const pages = {
     ],
     related: [
       { label: '自动备份', href: '/chatgpt-backup', desc: '先把 ChatGPT 会话稳定保存到本地。' },
-      { label: '官方导出对比', href: '/guides/chatgpt-official-export-vs-keepchat', desc: '了解官方导出和实时备份的差异。' },
-      { label: '本地归档', href: '/chatgpt-archive', desc: '导出前先用搜索和阅读视图整理会话。' },
-      { label: '安装教程', href: '/install', desc: '安装扩展后开始导出聊天记录。' },
+      { label: 'ChatGPT 导出 Markdown 教程', href: '/guides/chatgpt-to-markdown', desc: '把聊天记录保存为 .md 文件进入知识库。' },
+      { label: 'ChatGPT 导出 JSON 教程', href: '/guides/chatgpt-to-json', desc: '导出结构化数据用于迁移和脚本处理。' },
+      { label: 'ChatGPT 官方导出对比', href: '/guides/chatgpt-official-export-vs-keepchat', desc: '了解官方导出和实时备份的差异。' },
     ],
   },
   archive: {
@@ -314,8 +314,8 @@ const pages = {
     related: [
       { label: '自动备份', href: '/chatgpt-backup', desc: '先把聊天记录保存到本地档案。' },
       { label: '聊天记录导出', href: '/chatgpt-export', desc: '把归档会话导出为 Markdown / JSON / ZIP。' },
-      { label: '我的归档', href: '/library', desc: '打开本地阅读器查看已备份会话。' },
-      { label: '隐私政策', href: '/privacy', desc: '了解本地保存和数据边界。' },
+      { label: 'ChatGPT 导出到 Obsidian', href: '/guides/export-chatgpt-to-obsidian', desc: '把归档会话整理进 Obsidian 知识库。' },
+      { label: 'ChatGPT 导出教程', href: '/guides', desc: '阅读 Markdown、JSON、批量导出和备份教程。' },
     ],
   },
   guide: {
@@ -489,6 +489,7 @@ function Navbar() {
           <a href="/chatgpt-backup" className="hover:text-zinc-900">聊天备份</a>
           <a href="/chatgpt-export" className="hover:text-zinc-900">记录导出</a>
           <a href="/chatgpt-archive" className="hover:text-zinc-900">本地归档</a>
+          <a href="/guides" className="hover:text-zinc-900">导出教程</a>
           <a href="/install" className="hover:text-zinc-900">安装</a>
         </nav>
         <a href={STORE_URL} target="_blank" rel="noreferrer" className="btn-primary !px-4 !py-2 text-[13px]">

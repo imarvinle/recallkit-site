@@ -46,6 +46,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://keepchatai.com/guides</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://keepchatai.com/guides/chatgpt-to-markdown</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://keepchatai.com/guides/chatgpt-to-json</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://keepchatai.com/guides/bulk-export-chatgpt-conversations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://keepchatai.com/guides/export-chatgpt-to-obsidian</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://keepchatai.com/guides/backup-chatgpt-conversations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://keepchatai.com/guides/chatgpt-official-export-vs-keepchat</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
