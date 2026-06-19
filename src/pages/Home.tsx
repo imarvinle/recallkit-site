@@ -76,8 +76,8 @@ function Hero() {
           降智检测 · 实时备份 · 全程离线
         </span>
         <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-          看清你正在用的模型，<br />
-          <span className="italic text-sage-deep">留住每一次对话。</span>
+          ChatGPT 聊天记录<br />
+          <span className="italic text-sage-deep">自动备份与导出。</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
           KeepChat AI 在你聊天的同时，
@@ -106,42 +106,42 @@ function Hero() {
 function Features() {
   const items = [
     {
-      title: '降智检测',
+      title: 'ChatGPT 降智检测',
       en: 'Degrade detection',
       desc: '本地交叉校验，识别后台被悄悄替换的模型；三档判定，发现异常立刻给出明确结论。',
       href: '/degraded',
     },
     {
-      title: '实时备份',
+      title: 'ChatGPT 实时备份',
       en: 'Live backup',
       desc: '边聊边自动同步：检测到新消息后 2 秒内写入本地，永不丢失。',
       href: '/chatgpt-backup',
     },
     {
-      title: '全文搜索',
+      title: 'ChatGPT 聊天记录全文搜索',
       en: 'Full-text search',
       desc: '在所有标题、消息正文、代码块中亚秒级定位，关键词高亮。',
       href: '/chatgpt-archive',
     },
     {
-      title: '多格式导出',
+      title: 'ChatGPT 聊天记录导出',
       en: 'Multi-format export',
       desc: 'Markdown / 归档 JSON / GPT 原生 JSON 三选一，单条或批量打 zip。',
       href: '/chatgpt-export',
     },
     {
-      title: '100% 本地隐私',
+      title: 'ChatGPT 本地隐私保护',
       en: 'Local-only',
       desc: '所有数据存在浏览器本地，没有任何聊天内容流向服务器。',
       href: '/privacy',
     },
     {
-      title: '项目 & 多账号',
+      title: 'ChatGPT Projects 多账号归档',
       en: 'Projects + accounts',
       desc: '原生识别 ChatGPT Projects，多账号自动分组，互不干扰。',
     },
     {
-      title: '类 ChatGPT 阅读视图',
+      title: 'ChatGPT 会话归档阅读视图',
       en: 'ChatGPT-style reader',
       desc: '左侧标题列表 + 右侧对话流，配色字体几乎复刻官网。',
       href: '/chatgpt-archive',
@@ -155,7 +155,7 @@ function Features() {
             Functionality · 功能
           </p>
           <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            看清现状，<span className="italic text-sage-deep">留住资产</span>。
+            ChatGPT 备份、导出、搜索与降智检测。
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
             围绕"降智识别、备份、归档、搜索、导出"五个最高频的需求设计，
@@ -212,7 +212,7 @@ function Privacy() {
             Privacy · 隐私
           </p>
           <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            数据从不离开<br />你的电脑。
+            ChatGPT 聊天记录本地保存，<br />不上传服务器。
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
             隐私不是营销话术，而是产品边界。KeepChat AI
@@ -244,19 +244,19 @@ function Privacy() {
 function UseCases() {
   const cases = [
     {
-      title: '研究 & 学术',
+      title: 'ChatGPT 学术研究记录备份',
       desc: '把每次和 ChatGPT 的论证过程留底，方便随时追溯思路。',
     },
     {
-      title: '编程开发',
+      title: 'ChatGPT 编程开发会话归档',
       desc: '保存 prompt 模板、代码方案、调试记录，本地全文搜索。',
     },
     {
-      title: '内容创作',
+      title: 'ChatGPT 内容创作 Markdown 导出',
       desc: '写作灵感、稿件初稿一键导出 Markdown 进 Obsidian / Notion。',
     },
     {
-      title: '商业咨询',
+      title: 'ChatGPT 商业咨询记录管理',
       desc: '客户案例、商业分析做长期归档，免账号风控丢失风险。',
     },
   ];
@@ -266,7 +266,7 @@ function UseCases() {
         <div className="mb-14 max-w-3xl">
           <p className="text-sm font-medium uppercase tracking-widest text-sage-deep">Use cases · 适用场景</p>
           <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            谁在用 KeepChat AI？
+            哪些场景需要 ChatGPT 聊天记录备份？
           </h2>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -313,7 +313,9 @@ function Faq() {
     <section id="faq" className="border-t border-zinc-100 bg-zinc-50 py-24">
       <div className="mx-auto max-w-3xl px-6">
         <p className="text-sm font-medium uppercase tracking-widest text-sage-deep">FAQ · 常见问题</p>
-        <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">放心，已经替你想好了。</h2>
+        <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
+          ChatGPT 备份、导出和降智检测常见问题
+        </h2>
         <div className="mt-10 divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white">
           {items.map((it) => (
             <details key={it.q} className="group p-5">
@@ -335,7 +337,7 @@ function Cta() {
     <section className="py-24">
       <div className="mx-auto max-w-3xl rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-sage-soft px-8 py-16 text-center">
         <h2 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          把 ChatGPT 历史<span className="italic text-sage-deep">留在自己手里</span>。
+          把 ChatGPT 聊天记录<span className="italic text-sage-deep">备份到自己手里</span>。
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-600">
           一分钟安装，从下一条对话开始就受到保护。
