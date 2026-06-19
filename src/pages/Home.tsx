@@ -5,10 +5,22 @@
  * use-cases, FAQ, footer with privacy policy link.
  */
 
+import { useEffect } from 'react';
+import { setSeo } from '../lib/seo';
+
 const STORE_URL =
   'https://chromewebstore.google.com/detail/bannmklgebikoonanccnaalpfbibnlia';
 
 export default function Home() {
+  useEffect(() => {
+    setSeo({
+      title: 'KeepChat AI · ChatGPT 聊天记录备份、导出与本地归档',
+      description:
+        'KeepChat AI 自动备份 ChatGPT 聊天记录，支持本地全文搜索、会话归档、Markdown / JSON / ZIP 导出和降智检测，全程不上传服务器。',
+      path: '/',
+    });
+  }, []);
+
   return (
     <main className="min-h-screen bg-white text-zinc-900">
       <Header />
@@ -31,8 +43,11 @@ function Header() {
           <Logo />
           <span className="font-semibold tracking-tight">KeepChat AI</span>
         </a>
-        <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
+        <nav className="hidden items-center gap-4 text-sm text-zinc-600 lg:flex">
           <a href="#features" className="hover:text-zinc-900">功能</a>
+          <a href="/chatgpt-backup" className="hover:text-zinc-900">聊天备份</a>
+          <a href="/chatgpt-export" className="hover:text-zinc-900">记录导出</a>
+          <a href="/chatgpt-archive" className="hover:text-zinc-900">本地归档</a>
           <a href="/degraded" className="hover:text-zinc-900">降智检测</a>
           <a href="/install" className="hover:text-zinc-900">安装教程</a>
           <a href="#privacy" className="hover:text-zinc-900">隐私</a>
@@ -68,6 +83,8 @@ function Hero() {
           KeepChat AI 在你聊天的同时，
           <strong className="text-zinc-900">实时识别 ChatGPT 是否被悄悄降智</strong>
           ，并把每一条会话静默归档到浏览器本地。
+          它也是一款 ChatGPT 聊天记录备份与导出工具，支持本地搜索、会话归档、
+          Markdown / JSON / ZIP 多格式导出。
           <strong className="text-zinc-900">不上传服务器，不收集隐私，不依赖账号注册。</strong>
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -98,21 +115,25 @@ function Features() {
       title: '实时备份',
       en: 'Live backup',
       desc: '边聊边自动同步：检测到新消息后 2 秒内写入本地，永不丢失。',
+      href: '/chatgpt-backup',
     },
     {
       title: '全文搜索',
       en: 'Full-text search',
       desc: '在所有标题、消息正文、代码块中亚秒级定位，关键词高亮。',
+      href: '/chatgpt-archive',
     },
     {
       title: '多格式导出',
       en: 'Multi-format export',
       desc: 'Markdown / 归档 JSON / GPT 原生 JSON 三选一，单条或批量打 zip。',
+      href: '/chatgpt-export',
     },
     {
       title: '100% 本地隐私',
       en: 'Local-only',
       desc: '所有数据存在浏览器本地，没有任何聊天内容流向服务器。',
+      href: '/privacy',
     },
     {
       title: '项目 & 多账号',
@@ -123,6 +144,7 @@ function Features() {
       title: '类 ChatGPT 阅读视图',
       en: 'ChatGPT-style reader',
       desc: '左侧标题列表 + 右侧对话流，配色字体几乎复刻官网。',
+      href: '/chatgpt-archive',
     },
   ];
   return (
@@ -345,6 +367,8 @@ function Footer() {
         </div>
         <div className="flex items-center gap-5">
           <a href="/install" className="hover:text-zinc-900">安装教程</a>
+          <a href="/chatgpt-backup" className="hover:text-zinc-900">聊天备份</a>
+          <a href="/chatgpt-export" className="hover:text-zinc-900">记录导出</a>
           <a href="/changelog" className="hover:text-zinc-900">更新日志</a>
           <a href="/privacy" className="hover:text-zinc-900">隐私政策 / Privacy</a>
         </div>

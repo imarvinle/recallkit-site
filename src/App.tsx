@@ -6,6 +6,12 @@ import Library from './pages/Library';
 import Reader from './pages/Reader';
 import Degraded from './pages/Degraded';
 import Install from './pages/Install';
+import {
+  ChatGptArchivePage,
+  ChatGptBackupPage,
+  ChatGptExportPage,
+  OfficialExportGuidePage,
+} from './pages/SeoLanding';
 
 /**
  * Tiny pathname router. We deliberately avoid pulling react-router for
@@ -31,6 +37,12 @@ export default function App() {
   if (lower.startsWith('/library')) return <Library />;
   if (lower.startsWith('/degraded')) return <Degraded />;
   if (lower.startsWith('/install')) return <Install />;
+  if (lower.startsWith('/chatgpt-backup')) return <ChatGptBackupPage />;
+  if (lower.startsWith('/chatgpt-export')) return <ChatGptExportPage />;
+  if (lower.startsWith('/chatgpt-archive')) return <ChatGptArchivePage />;
+  if (lower.startsWith('/guides/chatgpt-official-export-vs-keepchat')) {
+    return <OfficialExportGuidePage />;
+  }
   const convMatch = path.match(/^\/c\/([^/?#]+)/);
   if (convMatch) return <Reader id={decodeURIComponent(convMatch[1])} />;
   return <Home />;
