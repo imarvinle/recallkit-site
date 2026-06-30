@@ -303,7 +303,20 @@ function Faq() {
     },
     {
       q: '免费版 ChatGPT 也能用吗？',
-      a: '可以。所有功能对 Free / Plus / Pro / Team 用户都开放。',
+      a: (
+        <>
+          可以。所有功能对 Free / Plus / Pro / Team 用户都开放。如果需要订阅 GPT 可以前往{' '}
+          <a
+            href="http://getgpt.pro/i/keepchatai"
+            target="_blank"
+            rel="noopener"
+            className="text-sage-deep underline underline-offset-2"
+          >
+            GETGPT Pro
+          </a>
+          。
+        </>
+      ),
     },
     {
       q: '会读取我的密码 / token 吗？',
